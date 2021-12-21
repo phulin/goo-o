@@ -6386,7 +6386,7 @@ function main() {
           preventEquip: (0,template_string/* $items */.vS)(src_templateObject22 || (src_templateObject22 = src_taggedTemplateLiteral(["broken champagne bottle"])))
         }).maximize();
 
-        if (modifier_get("Cold Resistance") < coldResTarget) {
+        if (modifier_get("Cold Resistance") < coldResTarget && coldResWeightMultiplier < 32) {
           coldResWeightMultiplier *= 2;
           (0,external_kolmafia_.print)("Missed target. Updated resistance weight multiplier to ".concat(coldResWeightMultiplier, "."), "blue");
         }
@@ -6414,7 +6414,7 @@ function main() {
 
       if (match) {
         (0,property/* set */.t8)("_crimbo21ColdResistance", parseInt(match[1]));
-        throw "Couldn't get enough cold resistance (13) to continue.";
+        throw "Couldn't get enough cold resistance (".concat(parseInt(match[1]), ") to continue.");
       }
 
       if ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(src_templateObject33 || (src_templateObject33 = src_taggedTemplateLiteral(["Beaten Up"]))))) {
