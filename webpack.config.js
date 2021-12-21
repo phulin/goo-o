@@ -40,7 +40,7 @@ const scriptsConfig = merge(
       "gooo-combat": "./src/combat.ts",
     },
     output: {
-      path: path.resolve(__dirname, "KoLmafia", "scripts", "garbage-collector"),
+      path: path.resolve(__dirname, "KoLmafia", "scripts", "goo-o"),
       filename: "[name].js",
       libraryTarget: "commonjs",
     },

@@ -1,4 +1,4 @@
-import { equip, myAdventures, setAutoAttack, toUrl, useFamiliar, visitUrl } from "kolmafia";
+import { equip, myAdventures, retrieveItem, setAutoAttack, use, useFamiliar } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,14 +6,19 @@ import {
   $item,
   $items,
   $location,
+  $monster,
+  adventureMacroAuto,
   clamp,
   get,
+  getBanishedMonsters,
   have,
   Requirement,
   sinceKolmafiaRevision,
 } from "libram";
+import { acquire } from "./acquire";
+import { boost } from "./boost";
 import { Macro } from "./combat";
-import { currentTurnsSpent, startingTurnsSpent } from "./lib";
+import { currentTurnsSpent, startingTurnsSpent, todayTurnsSpent } from "./lib";
 import { mood } from "./mood";
 import options from "./options";
 import { propertyManager } from "./properties";
@@ -36,7 +41,6 @@ export function main(argString = ""): void {
 
   try {
     propertyManager.set({
-      logPreferenceChange: true,
       logPreferenceChangeFilter: [
         ...new Set([
           ...get("logPreferenceChangeFilter").split(","),
@@ -50,6 +54,7 @@ export function main(argString = ""): void {
         .sort()
         .filter((a) => a)
         .join(","),
+      logPreferenceChange: true,
       battleAction: "custom combat script",
       autoSatisfyWithMall: true,
       autoSatisfyWithNPCs: true,
@@ -67,8 +72,6 @@ export function main(argString = ""): void {
       autoGarish: true,
     });
 
-    Macro.kill().setAutoAttack();
-
     while (currentTurnsSpent() < options.stopTurnsSpent && myAdventures() > 0) {
       const remaining = clamp(options.stopTurnsSpent - currentTurnsSpent(), 0, myAdventures());
 
@@ -76,6 +79,11 @@ export function main(argString = ""): void {
       if (have($item`velour viscometer`) && !have($effect`Scariersauce`)) {
         equip($item`velour viscometer`);
         mood().execute(remaining);
+      }
+
+      if (!have($effect`Bubble Vision`)) {
+        acquire(1, $item`bottle of bubbles`, 50000);
+        use($item`bottle of bubbles`);
       }
 
       useFamiliar(
@@ -95,13 +103,31 @@ export function main(argString = ""): void {
           `${(10 * (1 - itemDropWeight)).toFixed(0)} Cold Resistance`,
         ],
         { preventEquip: $items`broken champagne bottle` }
+      ).maximize();
+
+      const banished = [...getBanishedMonsters().values()];
+      if (
+        (options.location === $location`Site Alpha Dormitory` &&
+          !banished.includes($monster`gooified elf-thing`)) ||
+        (options.location === $location`Site Alpha Greenhouse` &&
+          !banished.includes($monster`gooified flower`))
+      ) {
+        retrieveItem($item`human musk`);
+      }
+
+      boost("Cold Resistance", todayTurnsSpent() / 3 + 5);
+      if (options.location !== $location`Site Alpha Quarry`) {
+        boost("Item Drop", options.location === $location`Site Alpha Greenhouse` ? 900 : 300);
+      }
+
+      adventureMacroAuto(
+        options.location,
+        Macro.if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
+          .if_($monster`gooified flower`, Macro.item($item`human musk`))
+          .kill()
       );
 
-      if (
-        visitUrl(toUrl(options.location)).includes(
-          "The extreme cold makes it impossible for you to continue"
-        )
-      ) {
+      if (get("lastEncounter").includes("Cold Resistance Required")) {
         throw "Couldn't get enough cold resistance to continue.";
       }
     }
