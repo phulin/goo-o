@@ -6203,7 +6203,7 @@ function mood() {
 
 var propertyManager = new property/* PropertiesManager */.Jr();
 ;// CONCATENATED MODULE: ./src/index.ts
-var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35, src_templateObject36, src_templateObject37, src_templateObject38, src_templateObject39, src_templateObject40;
+var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35, src_templateObject36, src_templateObject37, src_templateObject38, src_templateObject39, src_templateObject40, src_templateObject41;
 
 function src_toConsumableArray(arr) { return src_arrayWithoutHoles(arr) || src_iterableToArray(arr) || src_unsupportedIterableToArray(arr) || src_nonIterableSpread(); }
 
@@ -6244,11 +6244,11 @@ function main() {
       var arg = _step.value;
 
       if (arg === "dorm") {
-        options.location = (0,template_string/* $location */.PG)(src_templateObject38 || (src_templateObject38 = src_taggedTemplateLiteral(["Site Alpha Dormitory"])));
+        options.location = (0,template_string/* $location */.PG)(src_templateObject39 || (src_templateObject39 = src_taggedTemplateLiteral(["Site Alpha Dormitory"])));
       } else if (arg === "greenhouse") {
-        options.location = (0,template_string/* $location */.PG)(src_templateObject39 || (src_templateObject39 = src_taggedTemplateLiteral(["Site Alpha Greenhouse"])));
+        options.location = (0,template_string/* $location */.PG)(src_templateObject40 || (src_templateObject40 = src_taggedTemplateLiteral(["Site Alpha Greenhouse"])));
       } else if (arg === "quarry") {
-        options.location = (0,template_string/* $location */.PG)(src_templateObject40 || (src_templateObject40 = src_taggedTemplateLiteral(["Site Alpha Quarry"])));
+        options.location = (0,template_string/* $location */.PG)(src_templateObject41 || (src_templateObject41 = src_taggedTemplateLiteral(["Site Alpha Quarry"])));
       } else if (arg.match(/^\d+$/)) {
         options.stopTurnsSpent = startingTurnsSpent() + parseInt(arg);
       }
@@ -6358,6 +6358,10 @@ function main() {
 
       if ((0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(options.location)).includes("Cold Resistance Required")) {
         throw "Couldn't get enough cold resistance to continue.";
+      }
+
+      if ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(src_templateObject38 || (src_templateObject38 = src_taggedTemplateLiteral(["Beaten Up"]))))) {
+        throw "You're beaten up! Fix it and try adventuring again.";
       }
     }
   } finally {
