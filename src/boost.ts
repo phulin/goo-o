@@ -25,7 +25,7 @@ const modifierCandidatePotions = {
     ...$items`Gene Tonic: Elemental, programmable turtle, patch of extra-warm fur`,
     ...$items`patent preventative tonic, Ancient Protector Soda, Tapioc berry, cold powder`,
     ...$items`recording of Rolando's Rondo of Resisto, rainbow glitter candle, can of black paint`,
-    ...$items`lotion of hotness, lotion of spookiness, Ghost Dog Chow, cyan seashell`,
+    ...$items`lotion of hotness, lotion of spookiness, cyan seashell`,
     ...$items`sticky lava globs, pec oil`,
   ],
 };

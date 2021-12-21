@@ -24,6 +24,7 @@ import {
   have,
   Requirement,
   sinceKolmafiaRevision,
+  SongBoom,
 } from "libram";
 import { acquire } from "./acquire";
 import { boost } from "./boost";
@@ -86,6 +87,9 @@ export function main(argString = ""): void {
       useFamiliar($familiar`Mu`);
       use($item`box of Familiar Jacks`);
     }
+    if (SongBoom.have()) SongBoom.setSong("Food Vibrations");
+
+    let coldResWeightMultiplier = 1;
 
     while (currentTurnsSpent() < options.stopTurnsSpent && myAdventures() > 0) {
       const remaining = clamp(options.stopTurnsSpent - currentTurnsSpent(), 0, myAdventures());
@@ -122,15 +126,25 @@ export function main(argString = ""): void {
           : (options.stopTurnsSpent - currentTurnsSpent()) /
             (options.stopTurnsSpent - startingTurnsSpent);
 
-      new Requirement(
-        [
-          `${itemDropWeight.toFixed(1)} Item Drop`,
-          `${(10 * (1 - itemDropWeight)).toFixed(0)} Cold Resistance`,
-        ],
-        { preventEquip: $items`broken champagne bottle` }
-      ).maximize();
-
       const coldResTarget = Math.ceil(todayTurnsSpent() / 3) + 5;
+      while (getModifier("Cold Resistance") < coldResTarget && coldResWeightMultiplier < 32) {
+        new Requirement(
+          [
+            `${itemDropWeight.toFixed(1)} Item Drop`,
+            `${(10 * (1 - itemDropWeight) * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
+          ],
+          { preventEquip: $items`broken champagne bottle` }
+        ).maximize();
+
+        if (getModifier("Cold Resistance") < coldResTarget) {
+          coldResWeightMultiplier *= 2;
+          print(
+            `Missed target. Updated resistance weight multiplier to ${coldResWeightMultiplier}.`,
+            "blue"
+          );
+        }
+      }
+
       boost("Cold Resistance", coldResTarget);
       if (options.location !== $location`Site Alpha Quarry`) {
         boost("Item Drop", options.location === $location`Site Alpha Greenhouse` ? 900 : 300);
