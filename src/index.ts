@@ -1,16 +1,23 @@
 import {
   cliExecute,
+  eat,
   equip,
   myAdventures,
+  myClass,
+  myMp,
+  myThrall,
   print,
+  restoreMp,
   retrieveItem,
   setAutoAttack,
   toUrl,
   use,
   useFamiliar,
+  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
+  $class,
   $effect,
   $familiar,
   $familiars,
@@ -18,6 +25,8 @@ import {
   $items,
   $location,
   $monster,
+  $skill,
+  $thrall,
   clamp,
   get,
   getBanishedMonsters,
@@ -74,8 +83,8 @@ export function main(argString = ""): void {
       autoSatisfyWithStash: false,
       dontStopForCounters: true,
       maximizerFoldables: true,
-      hpAutoRecovery: 0.6,
-      hpAutoRecoveryTarget: 1.0,
+      hpAutoRecovery: 0.65,
+      hpAutoRecoveryTarget: 0.95,
       choiceAdventureScript: "",
       customCombatScript: "gooo",
       currentMood: "apathetic",
@@ -90,6 +99,9 @@ export function main(argString = ""): void {
     }
     if (SongBoom.have()) SongBoom.setSong("Food Vibrations");
     if (get("horseryAvailable") && get("_horsery") !== "pale horse") cliExecute("horsery pale");
+    if (myClass() === $class`Pastamancer` && myThrall() !== $thrall`Spice Ghost`) {
+      useSkill($skill`Bind Spice Ghost`);
+    }
 
     let coldResWeightMultiplier = 1;
 
@@ -117,10 +129,17 @@ export function main(argString = ""): void {
         retrieveItem($item`human musk`);
       }
 
-      useFamiliar(
-        $familiars`Jumpsuited Hound Dog, Cat Burglar`.find((fam) => have(fam)) ??
-          $familiar`Baby Gravy Fairy`
-      );
+      if (options.location === $location`Site Alpha Quarry`) {
+        useFamiliar(
+          $familiars`Stocking Mimic, Ninja Pirate Zombie Robot`.find((fam) => have(fam)) ??
+            $familiar`Cocoabo`
+        );
+      } else {
+        useFamiliar(
+          $familiars`Jumpsuited Hound Dog, Cat Burglar`.find((fam) => have(fam)) ??
+            $familiar`Baby Gravy Fairy`
+        );
+      }
 
       const itemDropWeight =
         options.location === $location`Site Alpha Quarry`
@@ -161,6 +180,17 @@ export function main(argString = ""): void {
         .if_($monster`gooified flower`, Macro.item($item`human musk`))
         .kill()
         .setAutoAttack();
+
+      if (myMp() < 200) {
+        if (
+          get("_sausagesEaten") < 23 &&
+          (have($item`magical sausage`) || have($item`magical sausage casing`))
+        ) {
+          eat($item`magical sausage`);
+        } else {
+          restoreMp(200);
+        }
+      }
 
       if (visitUrl(toUrl(options.location)).includes("Cold Resistance Required")) {
         throw "Couldn't get enough cold resistance to continue.";
