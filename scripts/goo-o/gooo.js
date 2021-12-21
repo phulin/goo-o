@@ -5303,7 +5303,7 @@ function options_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings
   stopTurnsSpent: startingTurnsSpent() + 150
 });
 ;// CONCATENATED MODULE: ./src/boost.ts
-var boost_templateObject, boost_templateObject2, boost_templateObject3, boost_templateObject4, boost_templateObject5, boost_templateObject6, boost_templateObject7, boost_templateObject8, boost_templateObject9, boost_templateObject10, boost_templateObject11, boost_templateObject12, boost_templateObject13, boost_templateObject14, boost_templateObject15, boost_templateObject16, boost_templateObject17, boost_templateObject18, boost_templateObject19, boost_templateObject20, boost_templateObject21;
+var boost_templateObject, boost_templateObject2, boost_templateObject3, boost_templateObject4, boost_templateObject5, boost_templateObject6, boost_templateObject7, boost_templateObject8, boost_templateObject9, boost_templateObject10, boost_templateObject11, boost_templateObject12, boost_templateObject13, boost_templateObject14, boost_templateObject15, boost_templateObject16, boost_templateObject17, boost_templateObject18, boost_templateObject19, boost_templateObject20, boost_templateObject21, boost_templateObject22;
 
 function boost_slicedToArray(arr, i) { return boost_arrayWithHoles(arr) || boost_iterableToArrayLimit(arr, i) || boost_unsupportedIterableToArray(arr, i) || boost_nonIterableRest(); }
 
@@ -5426,6 +5426,10 @@ function boost(modifier, target) {
 
       while (available() && turnsAvailable() > 0 && (0,external_kolmafia_.haveEffect)(effect) < turnsRemaining) {
         (0,external_kolmafia_.cliExecute)(effect.default);
+
+        if ((0,external_kolmafia_.mySpleenUse)() > 3 - (0,property/* get */.U2)("currentMojoFilters")) {
+          (0,external_kolmafia_.use)(3 - (0,property/* get */.U2)("currentMojoFilters"), (0,template_string/* $item */.xr)(boost_templateObject22 || (boost_templateObject22 = boost_taggedTemplateLiteral(["mojo filter"]))));
+        }
       }
     }
   } catch (err) {
