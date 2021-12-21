@@ -1025,13 +1025,14 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "xr": () => (/* binding */ $item),
 /* harmony export */   "vS": () => (/* binding */ $items),
 /* harmony export */   "O4": () => (/* binding */ $monster),
 /* harmony export */   "fr": () => (/* binding */ $monsters),
 /* harmony export */   "tm": () => (/* binding */ $skill),
 /* harmony export */   "nx": () => (/* binding */ $skills)
 /* harmony export */ });
-/* unused harmony exports $bounty, $bounties, $class, $classes, $coinmaster, $coinmasters, $effect, $effects, $element, $elements, $familiar, $familiars, $item, $location, $locations, $phylum, $phyla, $servant, $servants, $slot, $slots, $stat, $stats, $thrall, $thralls */
+/* unused harmony exports $bounty, $bounties, $class, $classes, $coinmaster, $coinmasters, $effect, $effects, $element, $elements, $familiar, $familiars, $location, $locations, $phylum, $phyla, $servant, $servants, $slot, $slots, $stat, $stats, $thrall, $thralls */
 var concatTemplateString = function concatTemplateString(literals) {
   for (var _len = arguments.length, placeholders = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     placeholders[_key - 1] = arguments[_key];
@@ -4005,7 +4006,7 @@ var StrictMacro = /*#__PURE__*/(/* unused pure expression or super */ null && (f
   return StrictMacro;
 }(Macro)));
 ;// CONCATENATED MODULE: ./src/combat.ts
-var combat_templateObject, combat_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9;
+var combat_templateObject, combat_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13;
 
 function combat_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -4046,7 +4047,7 @@ var combat_Macro = /*#__PURE__*/function (_LibramMacro) {
     key: "kill",
     value: function kill() {
       return this.if_( // eslint-disable-next-line libram/verify-constants
-      (0,template_string/* $monster */.O4)(combat_templateObject || (combat_templateObject = combat_taggedTemplateLiteral(["gooified dog-thing"]))), Macro.while_("hasskill Saucestorm", Macro.skill((0,template_string/* $skill */.tm)(combat_templateObject2 || (combat_templateObject2 = combat_taggedTemplateLiteral(["Saucestorm"])))))).trySkill((0,template_string/* $skill */.tm)(_templateObject3 || (_templateObject3 = combat_taggedTemplateLiteral(["Stuffed Mortar Shell"])))).while_("hasskill Saucegeyser", Macro.skill((0,template_string/* $skill */.tm)(_templateObject4 || (_templateObject4 = combat_taggedTemplateLiteral(["Saucegeyser"]))))).while_("hasskill Weapon of the Pastalord", Macro.skill((0,template_string/* $skill */.tm)(_templateObject5 || (_templateObject5 = combat_taggedTemplateLiteral(["Weapon of the Pastalord"]))))).while_("hasskill Cannelloni Cannon", Macro.skill((0,template_string/* $skill */.tm)(_templateObject6 || (_templateObject6 = combat_taggedTemplateLiteral(["Cannelloni Cannon"]))))).while_("hasskill Wave of Sauce", Macro.skill((0,template_string/* $skill */.tm)(_templateObject7 || (_templateObject7 = combat_taggedTemplateLiteral(["Wave of Sauce"]))))).while_("hasskill Saucestorm", Macro.skill((0,template_string/* $skill */.tm)(_templateObject8 || (_templateObject8 = combat_taggedTemplateLiteral(["Saucestorm"]))))).while_("hasskill Lunging Thrust-Smack", Macro.skill((0,template_string/* $skill */.tm)(_templateObject9 || (_templateObject9 = combat_taggedTemplateLiteral(["Lunging Thrust-Smack"]))))).attack().repeat();
+      (0,template_string/* $monster */.O4)(combat_templateObject || (combat_templateObject = combat_taggedTemplateLiteral(["gooified dog-thing"]))), Macro.while_("hasskill Saucestorm", Macro.skill((0,template_string/* $skill */.tm)(combat_templateObject2 || (combat_templateObject2 = combat_taggedTemplateLiteral(["Saucestorm"])))))).externalIf((0,property/* get */.U2)("_chestXRayUsed") < 3, Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject3 || (_templateObject3 = combat_taggedTemplateLiteral(["Chest X-Ray"]))))).externalIf((0,property/* get */.U2)("_shatteringPunchUsed") < 3, Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject4 || (_templateObject4 = combat_taggedTemplateLiteral(["Shattering Punch"]))))).externalIf(!(0,property/* get */.U2)("_gingerbreadMobHitUsed"), Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject5 || (_templateObject5 = combat_taggedTemplateLiteral(["Gingerbread Mob Hit"]))))).externalIf((0,property/* get */.U2)("_usedReplicaBatoomerang") < 3, Macro.tryItem((0,template_string/* $item */.xr)(_templateObject6 || (_templateObject6 = combat_taggedTemplateLiteral(["replica bat-oomerang"]))))).trySkill((0,template_string/* $skill */.tm)(_templateObject7 || (_templateObject7 = combat_taggedTemplateLiteral(["Stuffed Mortar Shell"])))).while_("hasskill Saucegeyser", Macro.skill((0,template_string/* $skill */.tm)(_templateObject8 || (_templateObject8 = combat_taggedTemplateLiteral(["Saucegeyser"]))))).while_("hasskill Weapon of the Pastalord", Macro.skill((0,template_string/* $skill */.tm)(_templateObject9 || (_templateObject9 = combat_taggedTemplateLiteral(["Weapon of the Pastalord"]))))).while_("hasskill Cannelloni Cannon", Macro.skill((0,template_string/* $skill */.tm)(_templateObject10 || (_templateObject10 = combat_taggedTemplateLiteral(["Cannelloni Cannon"]))))).while_("hasskill Wave of Sauce", Macro.skill((0,template_string/* $skill */.tm)(_templateObject11 || (_templateObject11 = combat_taggedTemplateLiteral(["Wave of Sauce"]))))).while_("hasskill Saucestorm", Macro.skill((0,template_string/* $skill */.tm)(_templateObject12 || (_templateObject12 = combat_taggedTemplateLiteral(["Saucestorm"]))))).while_("hasskill Lunging Thrust-Smack", Macro.skill((0,template_string/* $skill */.tm)(_templateObject13 || (_templateObject13 = combat_taggedTemplateLiteral(["Lunging Thrust-Smack"]))))).attack().repeat();
     }
   }], [{
     key: "kill",
