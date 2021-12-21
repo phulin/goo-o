@@ -124,6 +124,9 @@ export function boost(modifier: "Item Drop" | "Cold Resistance", target: number)
     if (modifier === "Cold Resistance" && turnsAvailable() >= turnsRemaining) continue;
     while (available() && turnsAvailable() > 0 && haveEffect(effect) < turnsRemaining) {
       cliExecute(effect.default);
+      if (mySpleenUse() > 3 - get("currentMojoFilters")) {
+        use(3 - get("currentMojoFilters"), $item`mojo filter`);
+      }
     }
   }
 
