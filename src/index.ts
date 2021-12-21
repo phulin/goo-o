@@ -201,6 +201,11 @@ export function main(argString = ""): void {
       }
     }
   } finally {
+    if (currentTurnsSpent() >= options.stopTurnsSpent) {
+      print(`Stopping, as we have now spent ${currentTurnsSpent()} today.`);
+    } else if (myAdventures() === 0) {
+      print("Stopping as we are out of adventures.");
+    }
     setAutoAttack(0);
     propertyManager.resetAll();
   }
