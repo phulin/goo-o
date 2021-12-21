@@ -5427,7 +5427,7 @@ function boost(modifier, target) {
       while (available() && turnsAvailable() > 0 && (0,external_kolmafia_.haveEffect)(effect) < turnsRemaining) {
         (0,external_kolmafia_.cliExecute)(effect.default);
 
-        if ((0,external_kolmafia_.mySpleenUse)() > 3 - (0,property/* get */.U2)("currentMojoFilters")) {
+        if ((0,external_kolmafia_.mySpleenUse)() >= 3 - (0,property/* get */.U2)("currentMojoFilters")) {
           (0,external_kolmafia_.use)(3 - (0,property/* get */.U2)("currentMojoFilters"), (0,template_string/* $item */.xr)(boost_templateObject22 || (boost_templateObject22 = boost_taggedTemplateLiteral(["mojo filter"]))));
         }
       }
