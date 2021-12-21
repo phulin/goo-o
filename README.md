@@ -1,5 +1,5 @@
 # goo-o
 
-`svn checkout checkout https://github.com/Loathing-Associates-Scripting-Society/garbage-collector/branches/release/`
+`svn checkout checkout https://github.com/phulin/goo-o/branches/release/`
 
 `gooo [turns] [dormitory|greenhouse|quarry]`
