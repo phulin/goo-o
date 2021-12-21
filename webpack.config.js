@@ -2,7 +2,7 @@
 
 /* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+/* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const { merge } = require("webpack-merge");
 
 const sharedConfig = {
@@ -25,13 +25,8 @@ const sharedConfig = {
         // exclude: /node_modules/,
         loader: "babel-loader",
       },
-      {
-        test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
-      },
     ],
   },
-  plugins: [new MiniCssExtractPlugin()],
   externals: {
     "canadv.ash": "commonjs canadv.ash",
     kolmafia: "commonjs kolmafia",
