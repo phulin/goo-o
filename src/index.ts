@@ -203,6 +203,10 @@ export function main(argString = ""): void {
       if (visitUrl(toUrl(options.location)).includes("Cold Resistance Required")) {
         throw "Couldn't get enough cold resistance to continue.";
       }
+
+      if (have($effect`Beaten Up`)) {
+        throw "You're beaten up! Fix it and try adventuring again.";
+      }
     }
   } finally {
     setAutoAttack(0);
