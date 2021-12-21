@@ -1,4 +1,14 @@
-import { equip, myAdventures, retrieveItem, setAutoAttack, use, useFamiliar } from "kolmafia";
+import {
+  equip,
+  myAdventures,
+  print,
+  retrieveItem,
+  setAutoAttack,
+  toUrl,
+  use,
+  useFamiliar,
+  visitUrl,
+} from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -7,10 +17,10 @@ import {
   $items,
   $location,
   $monster,
-  adventureMacroAuto,
   clamp,
   get,
   getBanishedMonsters,
+  getModifier,
   have,
   Requirement,
   sinceKolmafiaRevision,
@@ -72,6 +82,11 @@ export function main(argString = ""): void {
       autoGarish: true,
     });
 
+    if (have($familiar`Mu`) && !have($item`luck incense`)) {
+      useFamiliar($familiar`Mu`);
+      use($item`box of Familiar Jacks`);
+    }
+
     while (currentTurnsSpent() < options.stopTurnsSpent && myAdventures() > 0) {
       const remaining = clamp(options.stopTurnsSpent - currentTurnsSpent(), 0, myAdventures());
 
@@ -84,6 +99,16 @@ export function main(argString = ""): void {
       if (!have($effect`Bubble Vision`)) {
         acquire(1, $item`bottle of bubbles`, 50000);
         use($item`bottle of bubbles`);
+      }
+
+      const banished = [...getBanishedMonsters().values()];
+      if (
+        (options.location === $location`Site Alpha Dormitory` &&
+          !banished.includes($monster`gooified elf-thing`)) ||
+        (options.location === $location`Site Alpha Greenhouse` &&
+          !banished.includes($monster`gooified flower`))
+      ) {
+        retrieveItem($item`human musk`);
       }
 
       useFamiliar(
@@ -105,29 +130,23 @@ export function main(argString = ""): void {
         { preventEquip: $items`broken champagne bottle` }
       ).maximize();
 
-      const banished = [...getBanishedMonsters().values()];
-      if (
-        (options.location === $location`Site Alpha Dormitory` &&
-          !banished.includes($monster`gooified elf-thing`)) ||
-        (options.location === $location`Site Alpha Greenhouse` &&
-          !banished.includes($monster`gooified flower`))
-      ) {
-        retrieveItem($item`human musk`);
-      }
-
-      boost("Cold Resistance", todayTurnsSpent() / 3 + 5);
+      const coldResTarget = Math.ceil(todayTurnsSpent() / 3) + 5;
+      boost("Cold Resistance", coldResTarget);
       if (options.location !== $location`Site Alpha Quarry`) {
         boost("Item Drop", options.location === $location`Site Alpha Greenhouse` ? 900 : 300);
       }
 
-      adventureMacroAuto(
-        options.location,
-        Macro.if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
-          .if_($monster`gooified flower`, Macro.item($item`human musk`))
-          .kill()
+      print(
+        `Cold Res Required: ${coldResTarget}, Achieved: ${getModifier("Cold Resistance")}`,
+        "blue"
       );
 
-      if (get("lastEncounter").includes("Cold Resistance Required")) {
+      Macro.if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
+        .if_($monster`gooified flower`, Macro.item($item`human musk`))
+        .kill()
+        .setAutoAttack();
+
+      if (visitUrl(toUrl(options.location)).includes("Cold Resistance Required")) {
         throw "Couldn't get enough cold resistance to continue.";
       }
     }

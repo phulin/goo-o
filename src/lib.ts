@@ -1,4 +1,4 @@
-import { $locations, get, sum } from "libram";
+import { $locations, get, set, sum } from "libram";
 
 export function currentTurnsSpent(): number {
   return sum(
@@ -7,7 +7,8 @@ export function currentTurnsSpent(): number {
   );
 }
 
-export const startingTurnsSpent = get("_crimbo2021StartingTurnsSpent", 0) || currentTurnsSpent();
+export const startingTurnsSpent = get("_crimbo2021StartingTurnsSpent", currentTurnsSpent());
+set("_crimbo2021StartingTurnsSpent", startingTurnsSpent);
 
 export function todayTurnsSpent(): number {
   return currentTurnsSpent() - startingTurnsSpent;
