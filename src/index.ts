@@ -4,6 +4,7 @@ import {
   equip,
   myAdventures,
   myClass,
+  myFamiliar,
   myMp,
   myThrall,
   print,
@@ -43,6 +44,8 @@ import { currentTurnsSpent, startingTurnsSpent, todayTurnsSpent } from "./lib";
 import { mood } from "./mood";
 import options from "./options";
 import { propertyManager } from "./properties";
+
+const stasisFamiliars = $familiars`Stocking Mimic, Ninja Pirate Zombie Robot, Cocoabo`;
 
 export function main(argString = ""): void {
   sinceKolmafiaRevision(26043);
@@ -102,6 +105,7 @@ export function main(argString = ""): void {
     if (myClass() === $class`Pastamancer` && myThrall() !== $thrall`Spice Ghost`) {
       useSkill($skill`Bind Spice Ghost`);
     }
+    retrieveItem($item`seal tooth`);
 
     let coldResWeightMultiplier = 1;
 
@@ -178,6 +182,10 @@ export function main(argString = ""): void {
 
       Macro.if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
         .if_($monster`gooified flower`, Macro.item($item`human musk`))
+        .externalIf(
+          stasisFamiliars.includes(myFamiliar()),
+          Macro.while_("!pastround 10 && !hpbelow 250", Macro.item($item`seal tooth`))
+        )
         .kill()
         .setAutoAttack();
 
