@@ -105,7 +105,7 @@ export function main(argString = ""): void {
 
       if (!have($effect`Bubble Vision`)) {
         acquire(1, $item`bottle of bubbles`, 50000);
-        use($item`bottle of bubbles`);
+        if (have($item`bottle of bubbles`)) use($item`bottle of bubbles`);
       }
 
       const banished = [...getBanishedMonsters().values()];
@@ -136,14 +136,18 @@ export function main(argString = ""): void {
           : (options.stopTurnsSpent - currentTurnsSpent()) /
             (options.stopTurnsSpent - startingTurnsSpent());
 
-      const coldResTarget = Math.floor(todayTurnsSpent() / 3) + 5;
-      while (getModifier("Cold Resistance") < coldResTarget && coldResWeightMultiplier < 32) {
+      const coldResTarget = Math.floor((16 + todayTurnsSpent()) / 3);
+      do {
+        const forceEquip = [];
+        if (have($item`Lil' Doctor™ bag`) && get("_chestXRayUsed") < 3) {
+          forceEquip.push($item`Lil' Doctor™ bag`);
+        }
         new Requirement(
           [
             `${itemDropWeight.toFixed(1)} Item Drop`,
             `${(10 * (1 - itemDropWeight) * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
           ],
-          { preventEquip: $items`broken champagne bottle` }
+          { forceEquip, preventEquip: $items`broken champagne bottle` }
         ).maximize();
 
         if (getModifier("Cold Resistance") < coldResTarget) {
@@ -153,7 +157,7 @@ export function main(argString = ""): void {
             "blue"
           );
         }
-      }
+      } while (getModifier("Cold Resistance") < coldResTarget && coldResWeightMultiplier < 32);
 
       boost("Cold Resistance", coldResTarget);
       if (options.location !== $location`Site Alpha Quarry`) {
@@ -189,7 +193,7 @@ export function main(argString = ""): void {
       const match = result.match(/(\d+) Cold Resistance Required/);
       if (match) {
         set("_crimbo21ColdResistance", parseInt(match[1]));
-        throw "Couldn't get enough cold resistance to continue.";
+        throw `Couldn't get enough cold resistance (13) to continue.`;
       }
 
       if (have($effect`Beaten Up`)) {

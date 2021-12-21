@@ -42,7 +42,8 @@ const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolea
     [
       $effect`Pork Barrel`,
       () => 50,
-      () => get("barrelShrineUnlocked") && myClass() === $class`Pastamancer`,
+      () =>
+        get("barrelShrineUnlocked") && !get("_barrelPrayer") && myClass() === $class`Pastamancer`,
     ],
   ],
   "Cold Resistance": [
@@ -121,7 +122,7 @@ export function boost(modifier: "Item Drop" | "Cold Resistance", target: number)
   for (const [effect, turnsAvailable, available] of dailyBuffs) {
     if (getModifier(modifier) >= target) break;
     // Only activate cold buffs when they'll cover our remaining time here.
-    if (modifier === "Cold Resistance" && turnsAvailable() >= turnsRemaining) continue;
+    if (modifier === "Cold Resistance" && turnsAvailable() < turnsRemaining) continue;
     while (available() && turnsAvailable() > 0 && haveEffect(effect) < turnsRemaining) {
       cliExecute(effect.default);
       if (mySpleenUse() >= 3 - get("currentMojoFilters")) {
