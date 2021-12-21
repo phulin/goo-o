@@ -1,12 +1,9 @@
 import {
-  cliExecute,
   eat,
   equip,
   myAdventures,
-  myClass,
   myFamiliar,
   myMp,
-  myThrall,
   print,
   restoreMp,
   retrieveItem,
@@ -14,11 +11,9 @@ import {
   toUrl,
   use,
   useFamiliar,
-  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
-  $class,
   $effect,
   $familiar,
   $familiars,
@@ -26,20 +21,19 @@ import {
   $items,
   $location,
   $monster,
-  $skill,
-  $thrall,
   clamp,
   get,
   getBanishedMonsters,
   getModifier,
   have,
   Requirement,
+  set,
   sinceKolmafiaRevision,
-  SongBoom,
 } from "libram";
 import { acquire } from "./acquire";
 import { boost } from "./boost";
 import { Macro } from "./combat";
+import { dailies } from "./dailies";
 import { currentTurnsSpent, startingTurnsSpent, todayTurnsSpent } from "./lib";
 import { mood } from "./mood";
 import options from "./options";
@@ -96,16 +90,7 @@ export function main(argString = ""): void {
       autoGarish: true,
     });
 
-    if (have($familiar`Mu`) && !have($item`luck incense`)) {
-      useFamiliar($familiar`Mu`);
-      use($item`box of Familiar Jacks`);
-    }
-    if (SongBoom.have()) SongBoom.setSong("Food Vibrations");
-    if (get("horseryAvailable") && get("_horsery") !== "pale horse") cliExecute("horsery pale");
-    if (myClass() === $class`Pastamancer` && myThrall() !== $thrall`Spice Ghost`) {
-      useSkill($skill`Bind Spice Ghost`);
-    }
-    retrieveItem($item`seal tooth`);
+    dailies();
 
     let coldResWeightMultiplier = 1;
 
@@ -200,7 +185,10 @@ export function main(argString = ""): void {
         }
       }
 
-      if (visitUrl(toUrl(options.location)).includes("Cold Resistance Required")) {
+      const result = visitUrl(toUrl(options.location));
+      const match = result.match(/(\d+) Cold Resistance Required/);
+      if (match) {
+        set("_crimbo21ColdResistance", parseInt(match[1]));
         throw "Couldn't get enough cold resistance to continue.";
       }
 
