@@ -6422,6 +6422,12 @@ function main() {
       }
     }
   } finally {
+    if (currentTurnsSpent() >= options.stopTurnsSpent) {
+      (0,external_kolmafia_.print)("Stopping, as we have now spent ".concat(currentTurnsSpent(), " today."));
+    } else if ((0,external_kolmafia_.myAdventures)() === 0) {
+      (0,external_kolmafia_.print)("Stopping as we are out of adventures.");
+    }
+
     (0,external_kolmafia_.setAutoAttack)(0);
     propertyManager.resetAll();
   }
