@@ -150,7 +150,7 @@ export function main(argString = ""): void {
           { forceEquip, preventEquip: $items`broken champagne bottle` }
         ).maximize();
 
-        if (getModifier("Cold Resistance") < coldResTarget) {
+        if (getModifier("Cold Resistance") < coldResTarget && coldResWeightMultiplier < 32) {
           coldResWeightMultiplier *= 2;
           print(
             `Missed target. Updated resistance weight multiplier to ${coldResWeightMultiplier}.`,
@@ -193,7 +193,7 @@ export function main(argString = ""): void {
       const match = result.match(/(\d+) Cold Resistance Required/);
       if (match) {
         set("_crimbo21ColdResistance", parseInt(match[1]));
-        throw `Couldn't get enough cold resistance (13) to continue.`;
+        throw `Couldn't get enough cold resistance (${parseInt(match[1])}) to continue.`;
       }
 
       if (have($effect`Beaten Up`)) {
