@@ -1,4 +1,4 @@
-import { $skill, Mood } from "libram";
+import { $skill, AsdonMartin, Mood } from "libram";
 
 export function mood(): Mood {
   const mood = new Mood();
@@ -14,6 +14,8 @@ export function mood(): Mood {
   mood.skill($skill`Empathy of the Newt`);
   mood.skill($skill`Leash of Linguini`);
   mood.skill($skill`Blood Bond`);
+
+  mood.drive(AsdonMartin.Driving.Observantly);
 
   return mood;
 }

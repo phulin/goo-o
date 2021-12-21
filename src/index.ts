@@ -1,4 +1,5 @@
 import {
+  cliExecute,
   equip,
   myAdventures,
   print,
@@ -46,7 +47,7 @@ export function main(argString = ""): void {
     } else if (arg === "quarry") {
       options.location = $location`Site Alpha Quarry`;
     } else if (arg.match(/^\d+$/)) {
-      options.stopTurnsSpent = startingTurnsSpent + parseInt(arg);
+      options.stopTurnsSpent = startingTurnsSpent() + parseInt(arg);
     }
   }
 
@@ -88,6 +89,7 @@ export function main(argString = ""): void {
       use($item`box of Familiar Jacks`);
     }
     if (SongBoom.have()) SongBoom.setSong("Food Vibrations");
+    if (get("horseryAvailable") && get("_horsery") !== "pale horse") cliExecute("horsery pale");
 
     let coldResWeightMultiplier = 1;
 
@@ -124,9 +126,9 @@ export function main(argString = ""): void {
         options.location === $location`Site Alpha Quarry`
           ? 0
           : (options.stopTurnsSpent - currentTurnsSpent()) /
-            (options.stopTurnsSpent - startingTurnsSpent);
+            (options.stopTurnsSpent - startingTurnsSpent());
 
-      const coldResTarget = Math.ceil(todayTurnsSpent() / 3) + 5;
+      const coldResTarget = Math.floor(todayTurnsSpent() / 3) + 5;
       while (getModifier("Cold Resistance") < coldResTarget && coldResWeightMultiplier < 32) {
         new Requirement(
           [

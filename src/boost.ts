@@ -3,12 +3,13 @@ import {
   haveEffect,
   itemAmount,
   mallPrice,
+  myClass,
   mySpleenUse,
   npcPrice,
   spleenLimit,
   use,
 } from "kolmafia";
-import { $effect, $item, $items, $skill, get, getModifier, have, MayoClinic } from "libram";
+import { $class, $effect, $item, $items, $skill, get, getModifier, have, MayoClinic } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { acquire } from "./acquire";
 import { currentTurnsSpent } from "./lib";
@@ -22,7 +23,7 @@ const modifierCandidatePotions = {
     ...$items`resolution: be happier`,
   ],
   "Cold Resistance": [
-    ...$items`Gene Tonic: Elemental, programmable turtle, patch of extra-warm fur`,
+    ...$items`programmable turtle, patch of extra-warm fur`,
     ...$items`patent preventative tonic, Ancient Protector Soda, Tapioc berry, cold powder`,
     ...$items`recording of Rolando's Rondo of Resisto, rainbow glitter candle, can of black paint`,
     ...$items`lotion of hotness, lotion of spookiness, cyan seashell`,
@@ -37,6 +38,11 @@ const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolea
       $effect`Synthesis: Collection`,
       () => 30 * (spleenLimit() - mySpleenUse()),
       () => have($skill`Sweet Synthesis`),
+    ],
+    [
+      $effect`Pork Barrel`,
+      () => 50,
+      () => get("barrelShrineUnlocked") && myClass() === $class`Pastamancer`,
     ],
   ],
   "Cold Resistance": [
@@ -115,7 +121,7 @@ export function boost(modifier: "Item Drop" | "Cold Resistance", target: number)
   for (const [effect, turnsAvailable, available] of dailyBuffs) {
     if (getModifier(modifier) >= target) break;
     // Only activate cold buffs when they'll cover our remaining time here.
-    if (modifier === "Cold Resistance" && turnsAvailable() < turnsRemaining) continue;
+    if (modifier === "Cold Resistance" && turnsAvailable() >= turnsRemaining) continue;
     while (available() && turnsAvailable() > 0 && haveEffect(effect) < turnsRemaining) {
       cliExecute(effect.default);
     }
