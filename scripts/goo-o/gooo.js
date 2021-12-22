@@ -6410,6 +6410,12 @@ function main() {
       }
 
       var result = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(options.location));
+
+      if ((0,property/* get */.U2)("lastEncounter") === "Your Dog Found Something Again") {
+        (0,external_kolmafia_.runChoice)(-1);
+        continue;
+      }
+
       var match = result.match(/(\d+) Cold Resistance Required/);
 
       if (match) {
