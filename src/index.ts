@@ -7,6 +7,7 @@ import {
   print,
   restoreMp,
   retrieveItem,
+  runChoice,
   setAutoAttack,
   toUrl,
   use,
@@ -190,6 +191,12 @@ export function main(argString = ""): void {
       }
 
       const result = visitUrl(toUrl(options.location));
+
+      if (get("lastEncounter") === "Your Dog Found Something Again") {
+        runChoice(-1);
+        continue;
+      }
+
       const match = result.match(/(\d+) Cold Resistance Required/);
       if (match) {
         set("_crimbo21ColdResistance", parseInt(match[1]));
