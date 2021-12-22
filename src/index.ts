@@ -139,6 +139,7 @@ export function main(argString = ""): void {
       const coldResTarget = Math.floor((16 + todayTurnsSpent()) / 3);
       do {
         const forceEquip = [];
+		forceEquip.push($item`goo magnet`); 
         if (have($item`Lil' Doctor™ bag`) && get("_chestXRayUsed") < 3) {
           forceEquip.push($item`Lil' Doctor™ bag`);
         }
