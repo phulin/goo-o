@@ -101,6 +101,9 @@ export function dailies(): void {
     useSkill($skill`Bind Spice Ghost`);
   }
   retrieveItem($item`seal tooth`);
+  if (have($item`Kremlin's Greatest Briefcase`)) {
+    cliExecute("briefcase enchantment cold");
+  }
 
   voterSetup();
 }

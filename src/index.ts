@@ -131,11 +131,7 @@ export function main(argString = ""): void {
         );
       }
 
-      const itemDropWeight =
-        options.location === $location`Site Alpha Quarry`
-          ? 0
-          : (options.stopTurnsSpent - currentTurnsSpent()) /
-            (options.stopTurnsSpent - startingTurnsSpent());
+      const itemDropWeight = options.location === $location`Site Alpha Quarry` ? 0 : 1;
 
       const coldResTarget = Math.floor((16 + todayTurnsSpent()) / 3);
       do {
@@ -145,20 +141,33 @@ export function main(argString = ""): void {
         }
         new Requirement(
           [
-            `${itemDropWeight.toFixed(1)} Item Drop`,
-            `${(10 * (1 - itemDropWeight) * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
+            `${itemDropWeight} Item Drop`,
+            `${(10 * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
           ],
-          { forceEquip, preventEquip: $items`broken champagne bottle` }
+          {
+            forceEquip,
+            preventEquip: $items`broken champagne bottle`,
+            // eslint-disable-next-line libram/verify-constants
+            bonusEquip: new Map([[$item`goo magnet`, 100]]),
+          }
         ).maximize();
 
-        if (getModifier("Cold Resistance") < coldResTarget && coldResWeightMultiplier < 32) {
-          coldResWeightMultiplier *= 2;
+        if (
+          getModifier("Cold Resistance") < coldResTarget &&
+          Math.round(coldResWeightMultiplier) < 32
+        ) {
+          coldResWeightMultiplier *= Math.sqrt(2);
           print(
-            `Missed target. Updated resistance weight multiplier to ${coldResWeightMultiplier}.`,
+            `Missed target. Updated resistance weight multiplier to ${coldResWeightMultiplier.toFixed(
+              1
+            )}.`,
             "blue"
           );
         }
-      } while (getModifier("Cold Resistance") < coldResTarget && coldResWeightMultiplier < 32);
+      } while (
+        getModifier("Cold Resistance") < coldResTarget &&
+        Math.round(coldResWeightMultiplier) < 32
+      );
 
       boost("Cold Resistance", coldResTarget);
       if (options.location !== $location`Site Alpha Quarry`) {
@@ -208,12 +217,13 @@ export function main(argString = ""): void {
       }
     }
   } finally {
-    if (currentTurnsSpent() >= options.stopTurnsSpent) {
-      print(`Stopping, as we have now spent ${todayTurnsSpent()} turns today.`);
-    } else if (myAdventures() === 0) {
-      print("Stopping as we are out of adventures.");
-    }
     setAutoAttack(0);
     propertyManager.resetAll();
+  }
+
+  if (currentTurnsSpent() >= options.stopTurnsSpent) {
+    print(`Stopping, as we have now spent ${todayTurnsSpent()} turns today.`, "blue");
+  } else if (myAdventures() === 0) {
+    print(`Stopping as we are out of adventures. Spent ${todayTurnsSpent()} turns today.`, "blue");
   }
 }
