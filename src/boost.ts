@@ -23,7 +23,7 @@ const modifierCandidatePotions = {
     ...$items`resolution: be happier`,
   ],
   "Cold Resistance": [
-    ...$items`programmable turtle, patch of extra-warm fur`,
+    ...$items`patch of extra-warm fur`,
     ...$items`patent preventative tonic, Ancient Protector Soda, Tapioc berry, cold powder`,
     ...$items`recording of Rolando's Rondo of Resisto, rainbow glitter candle, can of black paint`,
     ...$items`lotion of hotness, lotion of spookiness, cyan seashell`,
@@ -145,6 +145,7 @@ export function boost(modifier: "Item Drop" | "Cold Resistance", target: number)
 
   for (const candidate of candidates) {
     if (getModifier(modifier) >= target) break;
+    if (candidate.unitCost() > 1000) break;
     candidate.consume(turnsRemaining);
   }
 }
