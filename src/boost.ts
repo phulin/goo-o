@@ -67,6 +67,11 @@ const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolea
       () => 20,
       () => MayoClinic.installed() && !get("_mayoTankSoaked"),
     ],
+    [
+      $effect`Cold Sweat`,
+      () => 50,
+      () => get("questS02Monkees") === "finished" && !get("_momFoodReceived"),
+    ],
   ],
 };
 
