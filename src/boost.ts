@@ -70,8 +70,8 @@ const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolea
     [
       $effect`Cold Sweat`,
       () => 50,
-      () => get("questS02Monkees") == "finished" && !get("_momFoodReceived"),
-    ]
+      () => get("questS02Monkees") === "finished" && !get("_momFoodReceived"),
+    ],
   ],
 };
 
