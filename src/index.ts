@@ -139,6 +139,12 @@ export function main(argString = ""): void {
         if (have($item`Lil' Doctor™ bag`) && get("_chestXRayUsed") < 3) {
           forceEquip.push($item`Lil' Doctor™ bag`);
         }
+        // Force goo magnet for all but the last 30 turns.
+        // eslint-disable-next-line libram/verify-constants
+        if (have($item`goo magnet`) && options.stopTurnsSpent - currentTurnsSpent() >= 30) {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip.push($item`goo magnet`);
+        }
         new Requirement(
           [
             `${itemDropWeight} Item Drop`,
@@ -147,8 +153,6 @@ export function main(argString = ""): void {
           {
             forceEquip,
             preventEquip: $items`broken champagne bottle`,
-            // eslint-disable-next-line libram/verify-constants
-            bonusEquip: new Map([[$item`goo magnet`, 100]]),
           }
         ).maximize();
 
