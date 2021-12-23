@@ -3,8 +3,11 @@ import {
   equip,
   myAdventures,
   myFamiliar,
+  myHp,
+  myMaxhp,
   myMp,
   print,
+  restoreHp,
   restoreMp,
   retrieveItem,
   runChoice,
@@ -148,7 +151,7 @@ export function main(argString = ""): void {
         new Requirement(
           [
             `${itemDropWeight} Item Drop`,
-            `${(10 * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
+            `${(5 * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
           ],
           {
             forceEquip,
@@ -201,6 +204,10 @@ export function main(argString = ""): void {
         } else {
           restoreMp(200);
         }
+      }
+
+      if (myHp() < 0.8 * myMaxhp()) {
+        restoreHp(0.95 * myMaxhp());
       }
 
       const result = visitUrl(toUrl(options.location));

@@ -20,7 +20,9 @@ const modifierCandidatePotions = {
     ...$items`resolution: be luckier, jug of porquoise juice, blue-frosted astral cupcake`,
     ...$items`recording of The Ballad of Richie Thingfinder, unusual oil, Salsa Caliente™ candle`,
     ...$items`spidercow eye-cluster, blue snowcone, eagle feather, lavender candy heart`,
-    ...$items`resolution: be happier`,
+    ...$items`resolution: be happier, goblin water, tiny dancer, Polka Pop, pumpkin juice`,
+    // Familiar Weight
+    ...$items`green candy heart, Gene Tonic: Fish, Daily Affirmation: Work For Hours a Week`,
   ],
   "Cold Resistance": [
     ...$items`patch of extra-warm fur`,
@@ -110,12 +112,12 @@ class Potion {
     return this.price() / (this.value() * this.effectDuration());
   }
 
-  consume(turnsRemaining: number) {
+  consume(turnsRemaining: number, maxUnitCost: number) {
     const count = Math.max(
       0,
       Math.ceil((turnsRemaining - haveEffect(this.effect())) / this.effectDuration())
     );
-    acquire(count, this.item, 1000 * this.value() * this.effectDuration());
+    acquire(count, this.item, maxUnitCost * this.value() * this.effectDuration(), false);
     use(Math.min(count, itemAmount(this.item)), this.item);
   }
 }
@@ -145,7 +147,8 @@ export function boost(modifier: "Item Drop" | "Cold Resistance", target: number)
 
   for (const candidate of candidates) {
     if (getModifier(modifier) >= target) break;
-    if (candidate.unitCost() > 1000) break;
-    candidate.consume(turnsRemaining);
+    const maxUnitCost = modifier === "Cold Resistance" ? 500 : 50;
+    if (candidate.unitCost() > maxUnitCost) break;
+    candidate.consume(turnsRemaining, maxUnitCost);
   }
 }
