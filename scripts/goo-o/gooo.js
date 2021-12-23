@@ -5247,7 +5247,7 @@ function options_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings
   stopTurnsSpent: startingTurnsSpent() + 150
 });
 ;// CONCATENATED MODULE: ./src/boost.ts
-var boost_templateObject, boost_templateObject2, boost_templateObject3, boost_templateObject4, boost_templateObject5, boost_templateObject6, boost_templateObject7, boost_templateObject8, boost_templateObject9, boost_templateObject10, boost_templateObject11, boost_templateObject12, boost_templateObject13, boost_templateObject14, boost_templateObject15, boost_templateObject16, boost_templateObject17, boost_templateObject18, boost_templateObject19, boost_templateObject20, boost_templateObject21, boost_templateObject22, boost_templateObject23;
+var boost_templateObject, boost_templateObject2, boost_templateObject3, boost_templateObject4, boost_templateObject5, boost_templateObject6, boost_templateObject7, boost_templateObject8, boost_templateObject9, boost_templateObject10, boost_templateObject11, boost_templateObject12, boost_templateObject13, boost_templateObject14, boost_templateObject15, boost_templateObject16, boost_templateObject17, boost_templateObject18, boost_templateObject19, boost_templateObject20, boost_templateObject21, boost_templateObject22, boost_templateObject23, boost_templateObject24;
 
 function boost_slicedToArray(arr, i) { return boost_arrayWithHoles(arr) || boost_iterableToArrayLimit(arr, i) || boost_unsupportedIterableToArray(arr, i) || boost_nonIterableRest(); }
 
@@ -5287,12 +5287,12 @@ function boost_arrayLikeToArray(arr, len) { if (len == null || len > arr.length)
 
 
 var modifierCandidatePotions = {
-  "Item Drop": [].concat(boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject || (boost_templateObject = boost_taggedTemplateLiteral(["resolution: be luckier, jug of porquoise juice, blue-frosted astral cupcake"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject2 || (boost_templateObject2 = boost_taggedTemplateLiteral(["recording of The Ballad of Richie Thingfinder, unusual oil, Salsa Caliente\u2122 candle"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject3 || (boost_templateObject3 = boost_taggedTemplateLiteral(["spidercow eye-cluster, blue snowcone, eagle feather, lavender candy heart"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject4 || (boost_templateObject4 = boost_taggedTemplateLiteral(["resolution: be happier"]))))),
-  "Cold Resistance": [].concat(boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject5 || (boost_templateObject5 = boost_taggedTemplateLiteral(["patch of extra-warm fur"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject6 || (boost_templateObject6 = boost_taggedTemplateLiteral(["patent preventative tonic, Ancient Protector Soda, Tapioc berry, cold powder"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject7 || (boost_templateObject7 = boost_taggedTemplateLiteral(["recording of Rolando's Rondo of Resisto, rainbow glitter candle, can of black paint"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject8 || (boost_templateObject8 = boost_taggedTemplateLiteral(["lotion of hotness, lotion of spookiness, cyan seashell"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject9 || (boost_templateObject9 = boost_taggedTemplateLiteral(["sticky lava globs, pec oil"])))))
+  "Item Drop": [].concat(boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject || (boost_templateObject = boost_taggedTemplateLiteral(["resolution: be luckier, jug of porquoise juice, blue-frosted astral cupcake"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject2 || (boost_templateObject2 = boost_taggedTemplateLiteral(["recording of The Ballad of Richie Thingfinder, unusual oil, Salsa Caliente\u2122 candle"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject3 || (boost_templateObject3 = boost_taggedTemplateLiteral(["spidercow eye-cluster, blue snowcone, eagle feather, lavender candy heart"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject4 || (boost_templateObject4 = boost_taggedTemplateLiteral(["resolution: be happier, goblin water, tiny dancer, Polka Pop, pumpkin juice"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject5 || (boost_templateObject5 = boost_taggedTemplateLiteral(["green candy heart, Gene Tonic: Fish, Daily Affirmation: Work For Hours a Week"]))))),
+  "Cold Resistance": [].concat(boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject6 || (boost_templateObject6 = boost_taggedTemplateLiteral(["patch of extra-warm fur"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject7 || (boost_templateObject7 = boost_taggedTemplateLiteral(["patent preventative tonic, Ancient Protector Soda, Tapioc berry, cold powder"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject8 || (boost_templateObject8 = boost_taggedTemplateLiteral(["recording of Rolando's Rondo of Resisto, rainbow glitter candle, can of black paint"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject9 || (boost_templateObject9 = boost_taggedTemplateLiteral(["lotion of hotness, lotion of spookiness, cyan seashell"])))), boost_toConsumableArray((0,template_string/* $items */.vS)(boost_templateObject10 || (boost_templateObject10 = boost_taggedTemplateLiteral(["sticky lava globs, pec oil"])))))
 };
 var modifierDailyBuffs = {
-  "Item Drop": [[(0,template_string/* $effect */._G)(boost_templateObject10 || (boost_templateObject10 = boost_taggedTemplateLiteral(["Certainty"]))), () => 50 * ((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()), () => true], [(0,template_string/* $effect */._G)(boost_templateObject11 || (boost_templateObject11 = boost_taggedTemplateLiteral(["Synthesis: Collection"]))), () => 30 * ((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()), () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(boost_templateObject12 || (boost_templateObject12 = boost_taggedTemplateLiteral(["Sweet Synthesis"]))))], [(0,template_string/* $effect */._G)(boost_templateObject13 || (boost_templateObject13 = boost_taggedTemplateLiteral(["Pork Barrel"]))), () => 50, () => (0,property/* get */.U2)("barrelShrineUnlocked") && !(0,property/* get */.U2)("_barrelPrayer") && (0,external_kolmafia_.myClass)() === (0,template_string/* $class */._$)(boost_templateObject14 || (boost_templateObject14 = boost_taggedTemplateLiteral(["Pastamancer"])))]],
-  "Cold Resistance": [[(0,template_string/* $effect */._G)(boost_templateObject15 || (boost_templateObject15 = boost_taggedTemplateLiteral(["Synthesis: Cold"]))), () => 30 * ((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()), () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(boost_templateObject16 || (boost_templateObject16 = boost_taggedTemplateLiteral(["Sweet Synthesis"]))))], [(0,template_string/* $effect */._G)(boost_templateObject17 || (boost_templateObject17 = boost_taggedTemplateLiteral(["Cold as Nice"]))), () => 50, () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(boost_templateObject18 || (boost_templateObject18 = boost_taggedTemplateLiteral(["Beach Comb"])))) && !(0,property/* get */.U2)("_beachHeadsUsed").toString().split(",").includes("2")], [(0,template_string/* $effect */._G)(boost_templateObject19 || (boost_templateObject19 = boost_taggedTemplateLiteral(["Feeling Peaceful"]))), () => 20 * (3 - (0,property/* get */.U2)("_feelPeacefulUsed")), () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(boost_templateObject20 || (boost_templateObject20 = boost_taggedTemplateLiteral(["Feel Peaceful"]))))], [(0,template_string/* $effect */._G)(boost_templateObject21 || (boost_templateObject21 = boost_taggedTemplateLiteral(["Force of Mayo Be With You"]))), () => 20, () => installed() && !(0,property/* get */.U2)("_mayoTankSoaked")], [(0,template_string/* $effect */._G)(boost_templateObject22 || (boost_templateObject22 = boost_taggedTemplateLiteral(["Cold Sweat"]))), () => 50, () => (0,property/* get */.U2)("questS02Monkees") === "finished" && !(0,property/* get */.U2)("_momFoodReceived")]]
+  "Item Drop": [[(0,template_string/* $effect */._G)(boost_templateObject11 || (boost_templateObject11 = boost_taggedTemplateLiteral(["Certainty"]))), () => 50 * ((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()), () => true], [(0,template_string/* $effect */._G)(boost_templateObject12 || (boost_templateObject12 = boost_taggedTemplateLiteral(["Synthesis: Collection"]))), () => 30 * ((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()), () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(boost_templateObject13 || (boost_templateObject13 = boost_taggedTemplateLiteral(["Sweet Synthesis"]))))], [(0,template_string/* $effect */._G)(boost_templateObject14 || (boost_templateObject14 = boost_taggedTemplateLiteral(["Pork Barrel"]))), () => 50, () => (0,property/* get */.U2)("barrelShrineUnlocked") && !(0,property/* get */.U2)("_barrelPrayer") && (0,external_kolmafia_.myClass)() === (0,template_string/* $class */._$)(boost_templateObject15 || (boost_templateObject15 = boost_taggedTemplateLiteral(["Pastamancer"])))]],
+  "Cold Resistance": [[(0,template_string/* $effect */._G)(boost_templateObject16 || (boost_templateObject16 = boost_taggedTemplateLiteral(["Synthesis: Cold"]))), () => 30 * ((0,external_kolmafia_.spleenLimit)() - (0,external_kolmafia_.mySpleenUse)()), () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(boost_templateObject17 || (boost_templateObject17 = boost_taggedTemplateLiteral(["Sweet Synthesis"]))))], [(0,template_string/* $effect */._G)(boost_templateObject18 || (boost_templateObject18 = boost_taggedTemplateLiteral(["Cold as Nice"]))), () => 50, () => (0,lib/* have */.lf)((0,template_string/* $item */.xr)(boost_templateObject19 || (boost_templateObject19 = boost_taggedTemplateLiteral(["Beach Comb"])))) && !(0,property/* get */.U2)("_beachHeadsUsed").toString().split(",").includes("2")], [(0,template_string/* $effect */._G)(boost_templateObject20 || (boost_templateObject20 = boost_taggedTemplateLiteral(["Feeling Peaceful"]))), () => 20 * (3 - (0,property/* get */.U2)("_feelPeacefulUsed")), () => (0,lib/* have */.lf)((0,template_string/* $skill */.tm)(boost_templateObject21 || (boost_templateObject21 = boost_taggedTemplateLiteral(["Feel Peaceful"]))))], [(0,template_string/* $effect */._G)(boost_templateObject22 || (boost_templateObject22 = boost_taggedTemplateLiteral(["Force of Mayo Be With You"]))), () => 20, () => installed() && !(0,property/* get */.U2)("_mayoTankSoaked")], [(0,template_string/* $effect */._G)(boost_templateObject23 || (boost_templateObject23 = boost_taggedTemplateLiteral(["Cold Sweat"]))), () => 50, () => (0,property/* get */.U2)("questS02Monkees") === "finished" && !(0,property/* get */.U2)("_momFoodReceived")]]
 };
 
 var Potion = /*#__PURE__*/function () {
@@ -5338,9 +5338,9 @@ var Potion = /*#__PURE__*/function () {
     }
   }, {
     key: "consume",
-    value: function consume(turnsRemaining) {
+    value: function consume(turnsRemaining, maxUnitCost) {
       var count = Math.max(0, Math.ceil((turnsRemaining - (0,external_kolmafia_.haveEffect)(this.effect())) / this.effectDuration()));
-      acquire(count, this.item, 1000 * this.value() * this.effectDuration());
+      acquire(count, this.item, maxUnitCost * this.value() * this.effectDuration(), false);
       (0,external_kolmafia_.use)(Math.min(count, (0,external_kolmafia_.itemAmount)(this.item)), this.item);
     }
   }]);
@@ -5372,7 +5372,7 @@ function boost(modifier, target) {
         (0,external_kolmafia_.cliExecute)(effect.default);
 
         if ((0,external_kolmafia_.mySpleenUse)() >= 3 - (0,property/* get */.U2)("currentMojoFilters")) {
-          (0,external_kolmafia_.use)(3 - (0,property/* get */.U2)("currentMojoFilters"), (0,template_string/* $item */.xr)(boost_templateObject23 || (boost_templateObject23 = boost_taggedTemplateLiteral(["mojo filter"]))));
+          (0,external_kolmafia_.use)(3 - (0,property/* get */.U2)("currentMojoFilters"), (0,template_string/* $item */.xr)(boost_templateObject24 || (boost_templateObject24 = boost_taggedTemplateLiteral(["mojo filter"]))));
         }
       }
     }
@@ -5395,8 +5395,9 @@ function boost(modifier, target) {
     for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
       var candidate = _step2.value;
       if (modifier_get(modifier) >= target) break;
-      if (candidate.unitCost() > 1000) break;
-      candidate.consume(turnsRemaining);
+      var maxUnitCost = modifier === "Cold Resistance" ? 500 : 50;
+      if (candidate.unitCost() > maxUnitCost) break;
+      candidate.consume(turnsRemaining, maxUnitCost);
     }
   } catch (err) {
     _iterator2.e(err);
@@ -6394,7 +6395,7 @@ function main() {
           forceEquip.push((0,template_string/* $item */.xr)(src_templateObject23 || (src_templateObject23 = src_taggedTemplateLiteral(["goo magnet"]))));
         }
 
-        new Requirement(["".concat(itemDropWeight, " Item Drop"), "".concat((10 * coldResWeightMultiplier).toFixed(0), " Cold Resistance")], {
+        new Requirement(["".concat(itemDropWeight, " Item Drop"), "".concat((5 * coldResWeightMultiplier).toFixed(0), " Cold Resistance")], {
           forceEquip: forceEquip,
           preventEquip: (0,template_string/* $items */.vS)(src_templateObject24 || (src_templateObject24 = src_taggedTemplateLiteral(["broken champagne bottle"])))
         }).maximize();
@@ -6420,6 +6421,10 @@ function main() {
         } else {
           (0,external_kolmafia_.restoreMp)(200);
         }
+      }
+
+      if ((0,external_kolmafia_.myHp)() < 0.8 * (0,external_kolmafia_.myMaxhp)()) {
+        (0,external_kolmafia_.restoreHp)(0.95 * (0,external_kolmafia_.myMaxhp)());
       }
 
       var result = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(options.location));
