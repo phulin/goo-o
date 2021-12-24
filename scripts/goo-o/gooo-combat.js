@@ -1027,12 +1027,14 @@ var PropertiesManager = /*#__PURE__*/(/* unused pure expression or super */ null
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "xr": () => (/* binding */ $item),
 /* harmony export */   "vS": () => (/* binding */ $items),
+/* harmony export */   "PG": () => (/* binding */ $location),
+/* harmony export */   "xw": () => (/* binding */ $locations),
 /* harmony export */   "O4": () => (/* binding */ $monster),
 /* harmony export */   "fr": () => (/* binding */ $monsters),
 /* harmony export */   "tm": () => (/* binding */ $skill),
 /* harmony export */   "nx": () => (/* binding */ $skills)
 /* harmony export */ });
-/* unused harmony exports $bounty, $bounties, $class, $classes, $coinmaster, $coinmasters, $effect, $effects, $element, $elements, $familiar, $familiars, $location, $locations, $phylum, $phyla, $servant, $servants, $slot, $slots, $stat, $stats, $thrall, $thralls */
+/* unused harmony exports $bounty, $bounties, $class, $classes, $coinmaster, $coinmasters, $effect, $effects, $element, $elements, $familiar, $familiars, $phylum, $phyla, $servant, $servants, $slot, $slots, $stat, $stats, $thrall, $thralls */
 var concatTemplateString = function concatTemplateString(literals) {
   for (var _len = arguments.length, placeholders = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     placeholders[_key - 1] = arguments[_key];
@@ -1289,6 +1291,163 @@ var $thrall = createSingleConstant(Thrall);
  */
 
 var $thralls = createPluralConstant(Thrall);
+
+/***/ }),
+
+/***/ 8588:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Sm": () => (/* binding */ sum)
+/* harmony export */ });
+/* unused harmony exports notNull, parseNumber, clamp, chunk, arrayToCountedMap, countedMapToArray, countedMapToString, sumNumbers, arrayContains, setEqual, invertMap */
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function notNull(value) {
+  return value !== null;
+}
+function parseNumber(n) {
+  return Number.parseInt(n.replace(/,/g, ""));
+}
+/**
+ * Clamp a number between lower and upper bounds.
+ *
+ * @param n Number to clamp.
+ * @param min Lower bound.
+ * @param max Upper bound.
+ */
+
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+/**
+ * Split an {@param array} into {@param chunkSize} sized chunks
+ *
+ * @param array Array to split
+ * @param chunkSize Size of chunk
+ */
+
+function chunk(array, chunkSize) {
+  var result = [];
+
+  for (var i = 0; i < array.length; i += chunkSize) {
+    result.push(array.slice(i, i + chunkSize));
+  }
+
+  return result;
+}
+function arrayToCountedMap(array) {
+  if (!Array.isArray(array)) return array;
+  var map = new Map();
+  array.forEach(item => {
+    map.set(item, (map.get(item) || 0) + 1);
+  });
+  return map;
+}
+function countedMapToArray(map) {
+  var _ref;
+
+  return (_ref = []).concat.apply(_ref, _toConsumableArray(_toConsumableArray(map).map(_ref2 => {
+    var _ref3 = _slicedToArray(_ref2, 2),
+        item = _ref3[0],
+        quantity = _ref3[1];
+
+    return Array(quantity).fill(item);
+  })));
+}
+function countedMapToString(map) {
+  return _toConsumableArray(map).map(_ref4 => {
+    var _ref5 = _slicedToArray(_ref4, 2),
+        item = _ref5[0],
+        quantity = _ref5[1];
+
+    return "".concat(quantity, " x ").concat(item);
+  }).join(", ");
+}
+/**
+ * Sum an array of numbers.
+ * @param addends Addends to sum.
+ * @param mappingFunction function to turn elements into numbers
+ */
+
+function sum(addends, mappingFunction) {
+  return addends.reduce((subtotal, element) => subtotal + mappingFunction(element), 0);
+}
+function sumNumbers(addends) {
+  return sum(addends, x => x);
+}
+/**
+ * Checks if a given item is in a readonly array, acting as a typeguard.
+ * @param item Needle
+ * @param array Readonly array haystack
+ * @returns Whether the item is in the array, and narrows the type of the item.
+ */
+
+function arrayContains(item, array) {
+  return array.includes(item);
+}
+/**
+ * Checks if two arrays contain the same elements in the same quantity.
+ * @param a First array for comparison
+ * @param b Second array for comparison
+ * @returns Whether the two arrays are equal, irrespective of order.
+ */
+
+function setEqual(a, b) {
+  var sortedA = _toConsumableArray(a).sort();
+
+  var sortedB = _toConsumableArray(b).sort();
+
+  return a.length === b.length && sortedA.every((item, index) => item === sortedB[index]);
+}
+/**
+ * Reverses keys and values for a given map
+ * @param map Map to invert
+ */
+
+function invertMap(map) {
+  var returnValue = new Map();
+
+  var _iterator = _createForOfIteratorHelper(map),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var _step$value = _slicedToArray(_step.value, 2),
+          key = _step$value[0],
+          value = _step$value[1];
+
+      returnValue.set(value, key);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+
+  return returnValue;
+}
 
 /***/ }),
 
@@ -2999,6 +3158,63 @@ $({
 
 /***/ }),
 
+/***/ 7442:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Up": () => (/* binding */ startingTurnsSpent)
+/* harmony export */ });
+/* unused harmony exports currentTurnsSpent, todayTurnsSpent */
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8588);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6672);
+var _templateObject;
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+function currentTurnsSpent() {
+  return (0,libram__WEBPACK_IMPORTED_MODULE_0__/* .sum */ .Sm)((0,libram__WEBPACK_IMPORTED_MODULE_1__/* .$locations */ .xw)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry"]))), loc => loc.turnsSpent);
+}
+function startingTurnsSpent() {
+  var result = (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
+
+  if (Math.floor((currentTurnsSpent() - result + 16) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
+    result = currentTurnsSpent() - ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21ColdResistance", 0) * 3 - 16);
+  }
+
+  (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
+  return result;
+}
+function todayTurnsSpent() {
+  return currentTurnsSpent() - startingTurnsSpent();
+}
+
+/***/ }),
+
+/***/ 330:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(678);
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7442);
+var _templateObject;
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  location: (0,libram__WEBPACK_IMPORTED_MODULE_0__/* .$location */ .PG)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory"]))),
+  stopTurnsSpent: (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .startingTurnsSpent */ .Up)() + 150
+});
+
+/***/ }),
+
 /***/ 7530:
 /***/ ((module) => {
 
@@ -4005,8 +4221,10 @@ var StrictMacro = /*#__PURE__*/(/* unused pure expression or super */ null && (f
 
   return StrictMacro;
 }(Macro)));
+// EXTERNAL MODULE: ./src/options.ts
+var options = __webpack_require__(330);
 ;// CONCATENATED MODULE: ./src/combat.ts
-var combat_templateObject, combat_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13;
+var combat_templateObject, combat_templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14;
 
 function combat_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -4032,6 +4250,7 @@ function combat_getPrototypeOf(o) { combat_getPrototypeOf = Object.setPrototypeO
 
 
 
+
 var combat_Macro = /*#__PURE__*/function (_LibramMacro) {
   combat_inherits(Macro, _LibramMacro);
 
@@ -4045,9 +4264,10 @@ var combat_Macro = /*#__PURE__*/function (_LibramMacro) {
 
   combat_createClass(Macro, [{
     key: "kill",
-    value: function kill() {
-      return this.if_( // eslint-disable-next-line libram/verify-constants
-      (0,template_string/* $monster */.O4)(combat_templateObject || (combat_templateObject = combat_taggedTemplateLiteral(["gooified dog-thing"]))), Macro.while_("hasskill Saucestorm", Macro.skill((0,template_string/* $skill */.tm)(combat_templateObject2 || (combat_templateObject2 = combat_taggedTemplateLiteral(["Saucestorm"])))))).externalIf((0,property/* get */.U2)("_chestXRayUsed") < 3, Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject3 || (_templateObject3 = combat_taggedTemplateLiteral(["Chest X-Ray"]))))).externalIf((0,property/* get */.U2)("_shatteringPunchUsed") < 3, Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject4 || (_templateObject4 = combat_taggedTemplateLiteral(["Shattering Punch"]))))).externalIf(!(0,property/* get */.U2)("_gingerbreadMobHitUsed"), Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject5 || (_templateObject5 = combat_taggedTemplateLiteral(["Gingerbread Mob Hit"]))))).externalIf((0,property/* get */.U2)("_usedReplicaBatoomerang") < 3, Macro.tryItem((0,template_string/* $item */.xr)(_templateObject6 || (_templateObject6 = combat_taggedTemplateLiteral(["replica bat-oomerang"]))))).trySkill((0,template_string/* $skill */.tm)(_templateObject7 || (_templateObject7 = combat_taggedTemplateLiteral(["Stuffed Mortar Shell"])))).while_("hasskill Saucegeyser", Macro.skill((0,template_string/* $skill */.tm)(_templateObject8 || (_templateObject8 = combat_taggedTemplateLiteral(["Saucegeyser"]))))).while_("hasskill Weapon of the Pastalord", Macro.skill((0,template_string/* $skill */.tm)(_templateObject9 || (_templateObject9 = combat_taggedTemplateLiteral(["Weapon of the Pastalord"]))))).while_("hasskill Cannelloni Cannon", Macro.skill((0,template_string/* $skill */.tm)(_templateObject10 || (_templateObject10 = combat_taggedTemplateLiteral(["Cannelloni Cannon"]))))).while_("hasskill Wave of Sauce", Macro.skill((0,template_string/* $skill */.tm)(_templateObject11 || (_templateObject11 = combat_taggedTemplateLiteral(["Wave of Sauce"]))))).while_("hasskill Saucestorm", Macro.skill((0,template_string/* $skill */.tm)(_templateObject12 || (_templateObject12 = combat_taggedTemplateLiteral(["Saucestorm"]))))).while_("hasskill Lunging Thrust-Smack", Macro.skill((0,template_string/* $skill */.tm)(_templateObject13 || (_templateObject13 = combat_taggedTemplateLiteral(["Lunging Thrust-Smack"]))))).attack().repeat();
+    value: function kill(skill) {
+      return this.if_((0,template_string/* $monster */.O4)(combat_templateObject || (combat_templateObject = combat_taggedTemplateLiteral(["gooified dog-thing"]))), Macro.while_("hasskill Saucestorm", Macro.skill((0,template_string/* $skill */.tm)(combat_templateObject2 || (combat_templateObject2 = combat_taggedTemplateLiteral(["Saucestorm"])))))).externalIf( // eslint-disable-next-line libram/verify-constants
+      options/* default.location */.Z.location !== (0,template_string/* $location */.PG)(_templateObject3 || (_templateObject3 = combat_taggedTemplateLiteral(["Site Alpha Primary Lab"]))), Macro.externalIf((0,property/* get */.U2)("_chestXRayUsed") < 3, Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject4 || (_templateObject4 = combat_taggedTemplateLiteral(["Chest X-Ray"]))))).externalIf((0,property/* get */.U2)("_shatteringPunchUsed") < 3, Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject5 || (_templateObject5 = combat_taggedTemplateLiteral(["Shattering Punch"]))))).externalIf(!(0,property/* get */.U2)("_gingerbreadMobHitUsed"), Macro.trySkill((0,template_string/* $skill */.tm)(_templateObject6 || (_templateObject6 = combat_taggedTemplateLiteral(["Gingerbread Mob Hit"]))))).externalIf((0,property/* get */.U2)("_usedReplicaBatoomerang") < 3, Macro.tryItem((0,template_string/* $item */.xr)(_templateObject7 || (_templateObject7 = combat_taggedTemplateLiteral(["replica bat-oomerang"])))))) // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .externalIf(skill !== undefined, Macro.skill(skill)).trySkill((0,template_string/* $skill */.tm)(_templateObject8 || (_templateObject8 = combat_taggedTemplateLiteral(["Stuffed Mortar Shell"])))).while_("hasskill Saucegeyser", Macro.skill((0,template_string/* $skill */.tm)(_templateObject9 || (_templateObject9 = combat_taggedTemplateLiteral(["Saucegeyser"]))))).while_("hasskill Weapon of the Pastalord", Macro.skill((0,template_string/* $skill */.tm)(_templateObject10 || (_templateObject10 = combat_taggedTemplateLiteral(["Weapon of the Pastalord"]))))).while_("hasskill Cannelloni Cannon", Macro.skill((0,template_string/* $skill */.tm)(_templateObject11 || (_templateObject11 = combat_taggedTemplateLiteral(["Cannelloni Cannon"]))))).while_("hasskill Wave of Sauce", Macro.skill((0,template_string/* $skill */.tm)(_templateObject12 || (_templateObject12 = combat_taggedTemplateLiteral(["Wave of Sauce"]))))).while_("hasskill Saucestorm", Macro.skill((0,template_string/* $skill */.tm)(_templateObject13 || (_templateObject13 = combat_taggedTemplateLiteral(["Saucestorm"]))))).while_("hasskill Lunging Thrust-Smack", Macro.skill((0,template_string/* $skill */.tm)(_templateObject14 || (_templateObject14 = combat_taggedTemplateLiteral(["Lunging Thrust-Smack"]))))).attack().repeat();
     }
   }], [{
     key: "kill",
