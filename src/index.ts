@@ -1,7 +1,11 @@
 import {
   eat,
   equip,
+  handlingChoice,
+  haveEquipped,
+  mpCost,
   myAdventures,
+  myBuffedstat,
   myFamiliar,
   myHp,
   myMaxhp,
@@ -24,7 +28,11 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
+  $skill,
+  $skills,
+  $stat,
   clamp,
   get,
   getBanishedMonsters,
@@ -45,6 +53,11 @@ import { propertyManager } from "./properties";
 
 const stasisFamiliars = $familiars`Stocking Mimic, Ninja Pirate Zombie Robot, Cocoabo`;
 
+function expectedHp(weight: number): number {
+  // This is the maximum possible HP we'd expect.
+  return 1.1 * (3 * (weight - 10) ** 3 + 100);
+}
+
 export function main(argString = ""): void {
   sinceKolmafiaRevision(26043);
 
@@ -56,8 +69,13 @@ export function main(argString = ""): void {
       options.location = $location`Site Alpha Greenhouse`;
     } else if (arg === "quarry") {
       options.location = $location`Site Alpha Quarry`;
+    } else if (arg === "lab") {
+      // eslint-disable-next-line libram/verify-constants
+      options.location = $location`Site Alpha Primary Lab`;
     } else if (arg.match(/^\d+$/)) {
       options.stopTurnsSpent = startingTurnsSpent() + parseInt(arg);
+    } else {
+      throw `Unrecognized argument "${arg}".`;
     }
   }
 
@@ -98,6 +116,11 @@ export function main(argString = ""): void {
 
     let coldResWeightMultiplier = 1;
 
+    if (currentTurnsSpent() === 0) {
+      // New ascension. Reset goo weight.
+      set("crimbo21GooWeight", 10);
+    }
+
     while (currentTurnsSpent() < options.stopTurnsSpent && myAdventures() > 0) {
       const remaining = clamp(options.stopTurnsSpent - currentTurnsSpent(), 0, myAdventures());
 
@@ -107,7 +130,7 @@ export function main(argString = ""): void {
         mood().execute(remaining);
       }
 
-      if (!have($effect`Bubble Vision`)) {
+      if (!have($effect`Bubble Vision`) && remaining >= 50) {
         acquire(1, $item`bottle of bubbles`, 50000);
         if (have($item`bottle of bubbles`)) use($item`bottle of bubbles`);
       }
@@ -122,7 +145,8 @@ export function main(argString = ""): void {
         retrieveItem($item`human musk`);
       }
 
-      if (options.location === $location`Site Alpha Quarry`) {
+      // eslint-disable-next-line libram/verify-constants
+      if ($locations`Site Alpha Quarry, Site Alpha Primary Lab`.includes(options.location)) {
         useFamiliar(
           $familiars`Stocking Mimic, Ninja Pirate Zombie Robot`.find((fam) => have(fam)) ??
             $familiar`Cocoabo`
@@ -152,6 +176,10 @@ export function main(argString = ""): void {
           [
             `${itemDropWeight} Item Drop`,
             `${(5 * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
+            // eslint-disable-next-line libram/verify-constants
+            ...(options.location === $location`Site Alpha Primary Lab`
+              ? ["0.1 Spell Damage Percent, 0.1 Mysticality Percent"]
+              : []),
           ],
           {
             forceEquip,
@@ -176,9 +204,9 @@ export function main(argString = ""): void {
         Math.round(coldResWeightMultiplier) < 32
       );
 
-      boost("Cold Resistance", coldResTarget);
-      if (options.location !== $location`Site Alpha Quarry`) {
-        boost("Item Drop", options.location === $location`Site Alpha Greenhouse` ? 900 : 300);
+      boost("Cold Resistance", coldResTarget, 500);
+      if ($locations`Site Alpha Dormitory, Site Alpha Greenhouse`.includes(options.location)) {
+        boost("Item Drop", options.location === $location`Site Alpha Greenhouse` ? 900 : 300, 50);
       }
 
       print(
@@ -186,13 +214,69 @@ export function main(argString = ""): void {
         "blue"
       );
 
+      let skill: Skill | undefined = undefined;
+      // eslint-disable-next-line libram/verify-constants
+      if (options.location === $location`Site Alpha Primary Lab`) {
+        skill = $skills`Weapon of the Pastalord, Saucegeyser`
+          .filter((skill) => have(skill))
+          .sort((x, y) => mpCost(x) - mpCost(y))[0];
+        if (skill === undefined) throw "Need Weapon or Saucegeyser for Lab.";
+
+        const multiplier = skill === $skill`Weapon of the Pastalord` ? 0.5 : 0.4;
+        const criticalMultiplier = () =>
+          getModifier("Spell Critical Percent") >= 89
+            ? haveEquipped($item`dark baconstone ring`)
+              ? 3
+              : 2
+            : 1;
+        const predictedDamage = () =>
+          multiplier *
+          myBuffedstat($stat`Mysticality`) *
+          (1 + getModifier("Spell Damage Percent") / 100) *
+          criticalMultiplier() *
+          (1 - 0.004 * getModifier("Monster Level"));
+
+        const weight = get("crimbo21GooWeight", 10);
+
+        print(`Predicting ${predictedDamage()} damage against ${expectedHp(weight)} HP.`, "blue");
+
+        if (predictedDamage() < expectedHp(weight)) {
+          const factorNeeded = expectedHp(weight) / predictedDamage();
+          print(`Not enough. Need to multiply by ${factorNeeded.toFixed(2)}.`);
+          const mysticalityMultiplier = 1 + getModifier("Mysticality Percent") / 100;
+          const mysticalityPercentTarget = 100 * Math.sqrt(factorNeeded) * mysticalityMultiplier;
+          const spellDamageMultiplier = 1 + getModifier("Spell Damage Percent") / 100;
+          const spellDamagePercentTarget = 100 * Math.sqrt(factorNeeded) * spellDamageMultiplier;
+          print(
+            `Targeting ${mysticalityPercentTarget.toFixed(
+              0
+            )}% myst and ${spellDamagePercentTarget}% SD.`
+          );
+          boost("Mysticality Percent", mysticalityPercentTarget, 10);
+          boost("Spell Damage Percent", spellDamagePercentTarget, 10);
+          if (predictedDamage() < expectedHp(weight)) {
+            throw "Somehow our goos got too big - use stench jelly to scale them back down.";
+          }
+        }
+
+        if (predictedDamage() >= expectedHp(weight + 1)) {
+          // Turn the knob to the right (more ML).
+          set("choiceAdventure1461", 1);
+        } else {
+          // Skip NC.
+          set("choiceAdventure1461", 6);
+        }
+      }
+
       Macro.if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
         .if_($monster`gooified flower`, Macro.item($item`human musk`))
         .externalIf(
-          stasisFamiliars.includes(myFamiliar()),
+          // eslint-disable-next-line libram/verify-constants
+          options.location !== $location`Site Alpha Primary Lab` &&
+            stasisFamiliars.includes(myFamiliar()),
           Macro.while_("!pastround 10 && !hpbelow 250", Macro.item($item`seal tooth`))
         )
-        .kill()
+        .kill(skill)
         .setAutoAttack();
 
       if (myMp() < 200) {
@@ -212,7 +296,7 @@ export function main(argString = ""): void {
 
       const result = visitUrl(toUrl(options.location));
 
-      if (get("lastEncounter") === "Your Dog Found Something Again") {
+      if (handlingChoice()) {
         runChoice(-1);
         continue;
       }
@@ -221,6 +305,11 @@ export function main(argString = ""): void {
       if (match) {
         set("_crimbo21ColdResistance", parseInt(match[1]));
         throw `Couldn't get enough cold resistance (${parseInt(match[1])}) to continue.`;
+      }
+
+      const encounterMatch = get("lastEncounter").match(/^(\d+)-ton grey goo/);
+      if (encounterMatch) {
+        set("crimbo21GooWeight", parseInt(encounterMatch[1]));
       }
 
       if (have($effect`Beaten Up`)) {

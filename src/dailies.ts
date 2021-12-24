@@ -11,8 +11,10 @@ import {
 } from "kolmafia";
 import {
   $class,
+  $effects,
   $familiar,
   $item,
+  $location,
   $monster,
   $skill,
   $thrall,
@@ -20,7 +22,9 @@ import {
   getSaleValue,
   have,
   SongBoom,
+  uneffect,
 } from "libram";
+import options from "./options";
 
 function voterSetup(): void {
   if (have($item`"I Voted!" sticker`) || !(get("voteAlways") || get("_voteToday"))) return;
@@ -103,6 +107,13 @@ export function dailies(): void {
   retrieveItem($item`seal tooth`);
   if (have($item`Kremlin's Greatest Briefcase`)) {
     cliExecute("briefcase enchantment cold");
+  }
+
+  // eslint-disable-next-line libram/verify-constants
+  if (options.location === $location`Site Alpha Primary Lab`) {
+    for (const effect of $effects`Ur-Kel's Aria of Annoyance, Pride of the Puffin, Drescher's Annoying Noise`) {
+      uneffect(effect);
+    }
   }
 
   voterSetup();

@@ -31,6 +31,22 @@ const modifierCandidatePotions = {
     ...$items`lotion of hotness, lotion of spookiness, cyan seashell`,
     ...$items`sticky lava globs, pec oil`,
   ],
+  "Mysticality Percent": [
+    ...$items`power pill, vial of baconstone juice, future drug: Smartinex, seal-brain elixir`,
+    ...$items`Snarf berry, Lobos Mints, pressurized potion of perspicacity, black sheepskin diploma`,
+    ...$items`pirate tract, Dennis's blessing of Minerva, flask of baconstone juice`,
+    ...$items`potion of temporary gr8ness, boiling hot cocoa, miniature power pill`,
+    ...$items`Mer-kin smartjuice, funky dried mushroom, Hawking's Elixir of Brilliance`,
+    ...$items`tomato juice of powerful power, glittery mascara, jug of baconstone juice`,
+    ...$items`ointment of the occult, votive of confidence, sparkler`,
+  ],
+  "Spell Damage Percent": [
+    ...$items`battery (AAA), pixel star, Gene Tonic: Elf, fudge-shaped hole in space-time`,
+    ...$items`37x37x37 puzzle cube, Yeg's Motel hand soap, Daily Affirmation: Be a Mind Master`,
+    ...$items`LOV Elixir #6, cordial of concentration, black eye shadow, demonic cow's blood`,
+    ...$items`tobiko marble soda, concentrated cordial of concentration`,
+    ...$items`wind-up meatcar`,
+  ],
 };
 
 const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolean][] } = {
@@ -73,6 +89,11 @@ const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolea
       $effect`Cold Sweat`,
       () => 50,
       () => get("questS02Monkees") === "finished" && !get("_momFoodReceived"),
+    ],
+    [
+      $effect`Video... Games?`,
+      () => 5,
+      () => have($item`defective Game Grid token`) && !get("_defectiveTokenUsed"),
     ],
   ],
 };
@@ -122,7 +143,11 @@ class Potion {
   }
 }
 
-export function boost(modifier: "Item Drop" | "Cold Resistance", target: number): void {
+export function boost(
+  modifier: "Item Drop" | "Cold Resistance" | "Mysticality Percent" | "Spell Damage Percent",
+  target: number,
+  maxUnitCost: number
+): void {
   const turnsRemaining = options.stopTurnsSpent - currentTurnsSpent();
 
   const dailyBuffs = modifierDailyBuffs[modifier] ?? [];
@@ -147,7 +172,6 @@ export function boost(modifier: "Item Drop" | "Cold Resistance", target: number)
 
   for (const candidate of candidates) {
     if (getModifier(modifier) >= target) break;
-    const maxUnitCost = modifier === "Cold Resistance" ? 500 : 50;
     if (candidate.unitCost() > maxUnitCost) break;
     candidate.consume(turnsRemaining, maxUnitCost);
   }
