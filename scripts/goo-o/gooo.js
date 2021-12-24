@@ -5444,7 +5444,7 @@ function dropProgress() {
   return get("_boomBoxFights");
 }
 ;// CONCATENATED MODULE: ./src/dailies.ts
-var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20;
+var dailies_templateObject, dailies_templateObject2, dailies_templateObject3, dailies_templateObject4, dailies_templateObject5, dailies_templateObject6, dailies_templateObject7, dailies_templateObject8, dailies_templateObject9, dailies_templateObject10, dailies_templateObject11, dailies_templateObject12, dailies_templateObject13, dailies_templateObject14, dailies_templateObject15, dailies_templateObject16, dailies_templateObject17, dailies_templateObject18, dailies_templateObject19, dailies_templateObject20, dailies_templateObject21;
 
 function dailies_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = dailies_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
@@ -5502,13 +5502,13 @@ function dailies() {
 
   (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject17 || (dailies_templateObject17 = dailies_taggedTemplateLiteral(["seal tooth"]))));
 
-  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailies_templateObject18 || (dailies_templateObject18 = dailies_taggedTemplateLiteral(["Kremlin's Greatest Briefcase"]))))) {
+  if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailies_templateObject18 || (dailies_templateObject18 = dailies_taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))) && modifier_get("Cold Resistance", (0,template_string/* $item */.xr)(dailies_templateObject19 || (dailies_templateObject19 = dailies_taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))) < 5) {
     (0,external_kolmafia_.cliExecute)("briefcase enchantment cold");
   } // eslint-disable-next-line libram/verify-constants
 
 
-  if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(dailies_templateObject19 || (dailies_templateObject19 = dailies_taggedTemplateLiteral(["Site Alpha Primary Lab"])))) {
-    var _iterator = dailies_createForOfIteratorHelper((0,template_string/* $effects */.lh)(dailies_templateObject20 || (dailies_templateObject20 = dailies_taggedTemplateLiteral(["Ur-Kel's Aria of Annoyance, Pride of the Puffin, Drescher's Annoying Noise"])))),
+  if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(dailies_templateObject20 || (dailies_templateObject20 = dailies_taggedTemplateLiteral(["Site Alpha Primary Lab"])))) {
+    var _iterator = dailies_createForOfIteratorHelper((0,template_string/* $effects */.lh)(dailies_templateObject21 || (dailies_templateObject21 = dailies_taggedTemplateLiteral(["Ur-Kel's Aria of Annoyance, Pride of the Puffin, Drescher's Annoying Noise"])))),
         _step;
 
     try {
@@ -6324,6 +6324,7 @@ function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(26043);
   var args = argString.split(/\s+/g);
+  var maxWeight = Infinity;
 
   var _iterator = src_createForOfIteratorHelper(args),
       _step;
@@ -6331,6 +6332,7 @@ function main() {
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
       var arg = _step.value;
+      var maxMatch = arg.match(/^max=(\d+)$/);
 
       if (arg === "dorm") {
         options/* default.location */.Z.location = (0,template_string/* $location */.PG)(src_templateObject43 || (src_templateObject43 = src_taggedTemplateLiteral(["Site Alpha Dormitory"])));
@@ -6343,6 +6345,8 @@ function main() {
         options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject46 || (_templateObject46 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"])));
       } else if (arg.match(/^\d+$/)) {
         options/* default.stopTurnsSpent */.Z.stopTurnsSpent = (0,src_lib/* startingTurnsSpent */.Up)() + parseInt(arg);
+      } else if (maxMatch) {
+        maxWeight = parseInt(maxMatch[1]);
       } else {
         throw "Unrecognized argument \"".concat(arg, "\".");
       }
@@ -6478,12 +6482,16 @@ function main() {
             }
           }
 
-          if (predictedDamage() >= expectedHp(weight + 1)) {
+          if (weight < maxWeight && (predictedDamage() >= expectedHp(weight + 1) || Number.isFinite(maxWeight))) {
+            // Increase if we already have enough damage, or the user set a max weight and we're below it.
             // Turn the knob to the right (more ML).
             (0,property/* set */.t8)("choiceAdventure1461", 1);
+          } else if (weight > maxWeight) {
+            // Turn the knob to the left (less ML).
+            (0,property/* set */.t8)("choiceAdventure1461", 3);
           } else {
             // Skip NC.
-            (0,property/* set */.t8)("choiceAdventure1461", 6);
+            (0,property/* set */.t8)("choiceAdventure1461", 4);
           }
         })();
       }
