@@ -19,6 +19,7 @@ import {
   $skill,
   $thrall,
   get,
+  getModifier,
   getSaleValue,
   have,
   SongBoom,
@@ -105,7 +106,10 @@ export function dailies(): void {
     useSkill($skill`Bind Spice Ghost`);
   }
   retrieveItem($item`seal tooth`);
-  if (have($item`Kremlin's Greatest Briefcase`)) {
+  if (
+    have($item`Kremlin's Greatest Briefcase`) &&
+    getModifier("Cold Resistance", $item`Kremlin's Greatest Briefcase`) < 5
+  ) {
     cliExecute("briefcase enchantment cold");
   }
 

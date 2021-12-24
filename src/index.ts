@@ -62,7 +62,9 @@ export function main(argString = ""): void {
   sinceKolmafiaRevision(26043);
 
   const args = argString.split(/\s+/g);
+  let maxWeight = Infinity;
   for (const arg of args) {
+    const maxMatch = arg.match(/^max=(\d+)$/);
     if (arg === "dorm") {
       options.location = $location`Site Alpha Dormitory`;
     } else if (arg === "greenhouse") {
@@ -74,6 +76,8 @@ export function main(argString = ""): void {
       options.location = $location`Site Alpha Primary Lab`;
     } else if (arg.match(/^\d+$/)) {
       options.stopTurnsSpent = startingTurnsSpent() + parseInt(arg);
+    } else if (maxMatch) {
+      maxWeight = parseInt(maxMatch[1]);
     } else {
       throw `Unrecognized argument "${arg}".`;
     }
@@ -259,12 +263,19 @@ export function main(argString = ""): void {
           }
         }
 
-        if (predictedDamage() >= expectedHp(weight + 1)) {
+        if (
+          weight < maxWeight &&
+          (predictedDamage() >= expectedHp(weight + 1) || Number.isFinite(maxWeight))
+        ) {
+          // Increase if we already have enough damage, or the user set a max weight and we're below it.
           // Turn the knob to the right (more ML).
           set("choiceAdventure1461", 1);
+        } else if (weight > maxWeight) {
+          // Turn the knob to the left (less ML).
+          set("choiceAdventure1461", 3);
         } else {
           // Skip NC.
-          set("choiceAdventure1461", 6);
+          set("choiceAdventure1461", 4);
         }
       }
 
