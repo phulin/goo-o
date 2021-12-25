@@ -288,7 +288,7 @@ export function main(argString = ""): void {
           set("choiceAdventure1461", 1);
         } else if (weight > maxWeight) {
           // Turn the knob to the left (less ML).
-          set("choiceAdventure1461", 3);
+          set("choiceAdventure1461", 2);
         } else {
           // Skip NC.
           set("choiceAdventure1461", 4);
