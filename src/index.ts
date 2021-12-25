@@ -125,6 +125,11 @@ export function main(argString = ""): void {
       set("crimbo21GooWeight", 10);
     }
 
+    print(
+      `Starting with ${currentTurnsSpent()} turns spent, going to ${options.stopTurnsSpent}.`,
+      "blue"
+    );
+
     while (currentTurnsSpent() < options.stopTurnsSpent && myAdventures() > 0) {
       const remaining = clamp(options.stopTurnsSpent - currentTurnsSpent(), 0, myAdventures());
 
@@ -162,7 +167,12 @@ export function main(argString = ""): void {
         );
       }
 
-      const itemDropWeight = options.location === $location`Site Alpha Quarry` ? 0 : 1;
+      // eslint-disable-next-line libram/verify-constants
+      const itemDropWeight = $locations`Site Alpha Quarry, Site Alpha Primary Lab`.includes(
+        options.location
+      )
+        ? 0
+        : 1;
 
       const coldResTarget = Math.floor((16 + todayTurnsSpent()) / 3);
       do {
@@ -176,6 +186,12 @@ export function main(argString = ""): void {
           // eslint-disable-next-line libram/verify-constants
           forceEquip.push($item`goo magnet`);
         }
+        // eslint-disable-next-line libram/verify-constants
+        if (options.location === $location`Site Alpha Primary Lab`) {
+          // eslint-disable-next-line libram/verify-constants
+          forceEquip.push(...$items`ert grey goo ring, ert grey goo ring`);
+        }
+
         new Requirement(
           [
             `${itemDropWeight} Item Drop`,

@@ -2,7 +2,8 @@ import { $locations, get, set, sum } from "libram";
 
 export function currentTurnsSpent(): number {
   return sum(
-    $locations`Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry`,
+    // eslint-disable-next-line libram/verify-constants
+    $locations`Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry, Site Alpha Primary Lab`,
     (loc) => loc.turnsSpent
   );
 }
