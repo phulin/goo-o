@@ -6497,7 +6497,7 @@ function main() {
             (0,property/* set */.t8)("choiceAdventure1461", 1);
           } else if (weight > maxWeight) {
             // Turn the knob to the left (less ML).
-            (0,property/* set */.t8)("choiceAdventure1461", 3);
+            (0,property/* set */.t8)("choiceAdventure1461", 2);
           } else {
             // Skip NC.
             (0,property/* set */.t8)("choiceAdventure1461", 4);
