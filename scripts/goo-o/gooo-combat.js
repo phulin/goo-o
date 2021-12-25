@@ -3175,7 +3175,8 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 function currentTurnsSpent() {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_0__/* .sum */ .Sm)((0,libram__WEBPACK_IMPORTED_MODULE_1__/* .$locations */ .xw)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry"]))), loc => loc.turnsSpent);
+  return (0,libram__WEBPACK_IMPORTED_MODULE_0__/* .sum */ .Sm)( // eslint-disable-next-line libram/verify-constants
+  (0,libram__WEBPACK_IMPORTED_MODULE_1__/* .$locations */ .xw)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry, Site Alpha Primary Lab"]))), loc => loc.turnsSpent);
 }
 function startingTurnsSpent() {
   var result = (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
