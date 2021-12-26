@@ -46,7 +46,7 @@ export function remainingTurns(): number {
 
 export function incrementTurnsSpentAdjustment(): void {
   const current = get("_crimbo21TurnsSpentAdjustment", 0);
-  set("_crimbo21TurnsSpentAdjustment", current - 1);
+  set("_crimbo21TurnsSpentAdjustment", current + 1);
 }
 
 export function turnsSpentAdjustment(): number {
