@@ -22,7 +22,6 @@ import {
   runChoice,
   runCombat,
   setAutoAttack,
-  toMonster,
   toUrl,
   useFamiliar,
   visitUrl,
