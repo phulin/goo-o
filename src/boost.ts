@@ -9,7 +9,18 @@ import {
   spleenLimit,
   use,
 } from "kolmafia";
-import { $class, $effect, $item, $items, $skill, get, getModifier, have, MayoClinic } from "libram";
+import {
+  $class,
+  $effect,
+  $item,
+  $items,
+  $location,
+  $skill,
+  get,
+  getModifier,
+  have,
+  MayoClinic,
+} from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { acquire } from "./acquire";
 import { currentTurnsSpent } from "./lib";
@@ -133,10 +144,10 @@ class Potion {
     return this.price() / (this.value() * this.effectDuration());
   }
 
-  consume(turnsRemaining: number, maxUnitCost: number) {
+  consume(remainingTurnsSpent: number, maxUnitCost: number) {
     const count = Math.max(
       0,
-      Math.ceil((turnsRemaining - haveEffect(this.effect())) / this.effectDuration())
+      Math.ceil((remainingTurnsSpent - haveEffect(this.effect())) / this.effectDuration())
     );
     acquire(count, this.item, maxUnitCost * this.value() * this.effectDuration(), false);
     use(Math.min(count, itemAmount(this.item)), this.item);
@@ -148,14 +159,17 @@ export function boost(
   target: number,
   maxUnitCost: number
 ): void {
-  const turnsRemaining = options.stopTurnsSpent - currentTurnsSpent();
+  const remainingTurnsSpent = Math.ceil(
+    (options.stopTurnsSpent - currentTurnsSpent()) *
+      (options.location === $location`Site Alpha Primary Lab` ? 10 / 11 : 1)
+  );
 
   const dailyBuffs = modifierDailyBuffs[modifier] ?? [];
   for (const [effect, turnsAvailable, available] of dailyBuffs) {
     if (getModifier(modifier) >= target) break;
     // Only activate cold buffs when they'll cover our remaining time here.
-    if (modifier === "Cold Resistance" && turnsAvailable() < turnsRemaining) continue;
-    while (available() && turnsAvailable() > 0 && haveEffect(effect) < turnsRemaining) {
+    if (modifier === "Cold Resistance" && turnsAvailable() < remainingTurnsSpent) continue;
+    while (available() && turnsAvailable() > 0 && haveEffect(effect) < remainingTurnsSpent) {
       cliExecute(effect.default);
       if (mySpleenUse() >= 3 - get("currentMojoFilters")) {
         use(3 - get("currentMojoFilters"), $item`mojo filter`);
@@ -173,6 +187,6 @@ export function boost(
   for (const candidate of candidates) {
     if (getModifier(modifier) >= target) break;
     if (candidate.unitCost() > maxUnitCost) break;
-    candidate.consume(turnsRemaining, maxUnitCost);
+    candidate.consume(remainingTurnsSpent, maxUnitCost);
   }
 }

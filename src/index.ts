@@ -22,6 +22,7 @@ import {
   runChoice,
   runCombat,
   setAutoAttack,
+  toSlot,
   toUrl,
   useFamiliar,
   visitUrl,
@@ -159,6 +160,7 @@ export function main(argString = ""): void {
     dailies();
 
     let coldResWeightMultiplier = 1;
+    let spellDamageLevel = 0;
 
     if (currentTurnsSpent() === 0) {
       // New ascension. Reset goo weight.
@@ -218,14 +220,25 @@ export function main(argString = ""): void {
         ? 0
         : 1;
 
+      const weight = get("crimbo21GooWeight", 10);
+
+      let skill: Skill | undefined = undefined;
+      if (options.location === $location`Site Alpha Primary Lab`) {
+        skill = $skills`Saucegeyser`
+          .filter((skill) => have(skill))
+          .sort((x, y) => mpCost(x) - mpCost(y))[0];
+        if (skill === undefined) throw "Need Saucegeyser for Lab.";
+      }
+
       const coldResTarget = Math.floor((15 + todayTurnsSpent()) / 3);
       do {
         const forceEquip = [];
         const preventSlot = [];
         if (options.location === $location`Site Alpha Primary Lab`) {
-          const acc3 = have($item`Space Trip safety headphones`)
-            ? $item`Space Trip safety headphones`
-            : $item`cozy scarf`;
+          const acc3 =
+            have($item`Space Trip safety headphones`) && spellDamageLevel >= 2
+              ? $item`Space Trip safety headphones`
+              : $item`cozy scarf`;
           if (availableAmount($item`ert grey goo ring`) >= 2) {
             // Equip two ert grey goo rings.
             preventSlot.push(...$slots`acc1, acc2, acc3`);
@@ -242,12 +255,22 @@ export function main(argString = ""): void {
               cliExecute("retrocape heck kill");
             }
           }
-          if (!have($item`meteorb`)) retrieveItem($item`meteorb`);
-          forceEquip.push($item`meteorb`);
-          if (myFamiliar() === $familiar`Left-Hand Man`) {
-            forceEquip.push(
-              have($item`HOA regulation book`) ? $item`HOA regulation book` : $item`goo magnet`
-            );
+          if (spellDamageLevel >= 1) {
+            if (!have($item`meteorb`)) retrieveItem($item`meteorb`);
+            forceEquip.push($item`meteorb`);
+          }
+          if (
+            spellDamageLevel >= 2 &&
+            myFamiliar() === $familiar`Left-Hand Man` &&
+            have($item`HOA regulation book`)
+          ) {
+            forceEquip.push($item`HOA regulation book`);
+          }
+
+          const offHandSlots = myFamiliar() === $familiar`Left-Hand Man` ? 2 : 1;
+          const offHandForce = forceEquip.filter((item) => toSlot(item) === $slot`off-hand`).length;
+          if (offHandForce < offHandSlots) {
+            forceEquip.push($item`goo magnet`);
           }
         } else {
           if (have($item`Lil' Doctor™ bag`) && get("_chestXRayUsed") < 3) {
@@ -261,7 +284,7 @@ export function main(argString = ""): void {
 
         new Requirement(
           [
-            `${itemDropWeight} Item Drop`,
+            ...(itemDropWeight > 0 ? [`${itemDropWeight} Item Drop`] : []),
             `${(5 * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
             ...(options.location === $location`Site Alpha Primary Lab`
               ? ["0.1 Spell Damage Percent, 0.1 Mysticality Percent"]
@@ -276,6 +299,19 @@ export function main(argString = ""): void {
         ).maximize();
 
         if (
+          options.location === $location`Site Alpha Primary Lab` &&
+          skill &&
+          predictedDamage(skill) < expectedHp(weight) &&
+          spellDamageLevel < 2
+        ) {
+          spellDamageLevel++;
+          print(
+            `Failed to get enough spell damage. Moving to spell damage level ${spellDamageLevel}.`,
+            "blue"
+          );
+        }
+
+        if (
           getModifier("Cold Resistance") < coldResTarget &&
           Math.round(coldResWeightMultiplier) < 32
         ) {
@@ -288,8 +324,12 @@ export function main(argString = ""): void {
           );
         }
       } while (
-        getModifier("Cold Resistance") < coldResTarget &&
-        Math.round(coldResWeightMultiplier) < 32
+        (getModifier("Cold Resistance") < coldResTarget &&
+          Math.round(coldResWeightMultiplier) < 32) ||
+        (options.location === $location`Site Alpha Primary Lab` &&
+          skill &&
+          predictedDamage(skill) < expectedHp(weight) &&
+          spellDamageLevel < 2)
       );
 
       boost("Cold Resistance", coldResTarget, 500);
@@ -309,15 +349,7 @@ export function main(argString = ""): void {
         "blue"
       );
 
-      let skill: Skill | undefined = undefined;
-      if (options.location === $location`Site Alpha Primary Lab`) {
-        skill = $skills`Saucegeyser`
-          .filter((skill) => have(skill))
-          .sort((x, y) => mpCost(x) - mpCost(y))[0];
-        if (skill === undefined) throw "Need Saucegeyser for Lab.";
-
-        const weight = get("crimbo21GooWeight", 10);
-
+      if (options.location === $location`Site Alpha Primary Lab` && skill) {
         print(
           `Predicting ${predictedDamage(skill).toFixed(0)} damage against ${expectedHp(
             weight
@@ -404,7 +436,10 @@ export function main(argString = ""): void {
         set("crimbo21GooWeight", parseInt(encounterMatch[1]));
       }
 
-      if (get("lastEncounter").trim() === "" && lastChoice() === 1461) {
+      if (
+        ["", "Hello Knob My Old Friend"].includes(get("lastEncounter").trim()) &&
+        lastChoice() === 1461
+      ) {
         // Just hit the NC. Decrement turns spent to adjust for the fact that Mafia doesn't count it.
         print("Hit the NC. Adjusting turns spent...", "blue");
         decrementStartingTurnsSpent();
