@@ -5264,7 +5264,7 @@ var src_lib = __webpack_require__(7442);
 // EXTERNAL MODULE: ./src/options.ts
 var options = __webpack_require__(330);
 ;// CONCATENATED MODULE: ./src/boost.ts
-var boost_templateObject, boost_templateObject2, boost_templateObject3, boost_templateObject4, boost_templateObject5, boost_templateObject6, boost_templateObject7, boost_templateObject8, boost_templateObject9, boost_templateObject10, boost_templateObject11, boost_templateObject12, boost_templateObject13, boost_templateObject14, boost_templateObject15, boost_templateObject16, boost_templateObject17, boost_templateObject18, boost_templateObject19, boost_templateObject20, boost_templateObject21, boost_templateObject22, boost_templateObject23, boost_templateObject24, boost_templateObject25, boost_templateObject26, boost_templateObject27, boost_templateObject28, boost_templateObject29, boost_templateObject30, boost_templateObject31, boost_templateObject32, boost_templateObject33, boost_templateObject34, boost_templateObject35, boost_templateObject36, boost_templateObject37, boost_templateObject38;
+var boost_templateObject, boost_templateObject2, boost_templateObject3, boost_templateObject4, boost_templateObject5, boost_templateObject6, boost_templateObject7, boost_templateObject8, boost_templateObject9, boost_templateObject10, boost_templateObject11, boost_templateObject12, boost_templateObject13, boost_templateObject14, boost_templateObject15, boost_templateObject16, boost_templateObject17, boost_templateObject18, boost_templateObject19, boost_templateObject20, boost_templateObject21, boost_templateObject22, boost_templateObject23, boost_templateObject24, boost_templateObject25, boost_templateObject26, boost_templateObject27, boost_templateObject28, boost_templateObject29, boost_templateObject30, boost_templateObject31, boost_templateObject32, boost_templateObject33, boost_templateObject34, boost_templateObject35, boost_templateObject36, boost_templateObject37, boost_templateObject38, boost_templateObject39;
 
 function boost_slicedToArray(arr, i) { return boost_arrayWithHoles(arr) || boost_iterableToArrayLimit(arr, i) || boost_unsupportedIterableToArray(arr, i) || boost_nonIterableRest(); }
 
@@ -5357,8 +5357,8 @@ var Potion = /*#__PURE__*/function () {
     }
   }, {
     key: "consume",
-    value: function consume(turnsRemaining, maxUnitCost) {
-      var count = Math.max(0, Math.ceil((turnsRemaining - (0,external_kolmafia_.haveEffect)(this.effect())) / this.effectDuration()));
+    value: function consume(remainingTurnsSpent, maxUnitCost) {
+      var count = Math.max(0, Math.ceil((remainingTurnsSpent - (0,external_kolmafia_.haveEffect)(this.effect())) / this.effectDuration()));
       acquire(count, this.item, maxUnitCost * this.value() * this.effectDuration(), false);
       (0,external_kolmafia_.use)(Math.min(count, (0,external_kolmafia_.itemAmount)(this.item)), this.item);
     }
@@ -5370,7 +5370,7 @@ var Potion = /*#__PURE__*/function () {
 function boost(modifier, target, maxUnitCost) {
   var _modifierDailyBuffs$m, _modifierCandidatePot;
 
-  var turnsRemaining = options/* default.stopTurnsSpent */.Z.stopTurnsSpent - (0,src_lib/* currentTurnsSpent */.OF)();
+  var remainingTurnsSpent = Math.ceil((options/* default.stopTurnsSpent */.Z.stopTurnsSpent - (0,src_lib/* currentTurnsSpent */.OF)()) * (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(boost_templateObject38 || (boost_templateObject38 = boost_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) ? 10 / 11 : 1));
   var dailyBuffs = (_modifierDailyBuffs$m = modifierDailyBuffs[modifier]) !== null && _modifierDailyBuffs$m !== void 0 ? _modifierDailyBuffs$m : [];
 
   var _iterator = boost_createForOfIteratorHelper(dailyBuffs),
@@ -5385,13 +5385,13 @@ function boost(modifier, target, maxUnitCost) {
 
       if (modifier_get(modifier) >= target) break; // Only activate cold buffs when they'll cover our remaining time here.
 
-      if (modifier === "Cold Resistance" && turnsAvailable() < turnsRemaining) continue;
+      if (modifier === "Cold Resistance" && turnsAvailable() < remainingTurnsSpent) continue;
 
-      while (available() && turnsAvailable() > 0 && (0,external_kolmafia_.haveEffect)(effect) < turnsRemaining) {
+      while (available() && turnsAvailable() > 0 && (0,external_kolmafia_.haveEffect)(effect) < remainingTurnsSpent) {
         (0,external_kolmafia_.cliExecute)(effect.default);
 
         if ((0,external_kolmafia_.mySpleenUse)() >= 3 - (0,property/* get */.U2)("currentMojoFilters")) {
-          (0,external_kolmafia_.use)(3 - (0,property/* get */.U2)("currentMojoFilters"), (0,template_string/* $item */.xr)(boost_templateObject38 || (boost_templateObject38 = boost_taggedTemplateLiteral(["mojo filter"]))));
+          (0,external_kolmafia_.use)(3 - (0,property/* get */.U2)("currentMojoFilters"), (0,template_string/* $item */.xr)(boost_templateObject39 || (boost_templateObject39 = boost_taggedTemplateLiteral(["mojo filter"]))));
         }
       }
     }
@@ -5415,7 +5415,7 @@ function boost(modifier, target, maxUnitCost) {
       var candidate = _step2.value;
       if (modifier_get(modifier) >= target) break;
       if (candidate.unitCost() > maxUnitCost) break;
-      candidate.consume(turnsRemaining, maxUnitCost);
+      candidate.consume(remainingTurnsSpent, maxUnitCost);
     }
   } catch (err) {
     _iterator2.e(err);
@@ -6324,7 +6324,7 @@ function mood() {
 
 var propertyManager = new property/* PropertiesManager */.Jr();
 ;// CONCATENATED MODULE: ./src/index.ts
-var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35, src_templateObject36, src_templateObject37, src_templateObject38, src_templateObject39, src_templateObject40, src_templateObject41, src_templateObject42, src_templateObject43, src_templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72;
+var src_templateObject, src_templateObject2, src_templateObject3, src_templateObject4, src_templateObject5, src_templateObject6, src_templateObject7, src_templateObject8, src_templateObject9, src_templateObject10, src_templateObject11, src_templateObject12, src_templateObject13, src_templateObject14, src_templateObject15, src_templateObject16, src_templateObject17, src_templateObject18, src_templateObject19, src_templateObject20, src_templateObject21, src_templateObject22, src_templateObject23, src_templateObject24, src_templateObject25, src_templateObject26, src_templateObject27, src_templateObject28, src_templateObject29, src_templateObject30, src_templateObject31, src_templateObject32, src_templateObject33, src_templateObject34, src_templateObject35, src_templateObject36, src_templateObject37, src_templateObject38, src_templateObject39, src_templateObject40, src_templateObject41, src_templateObject42, src_templateObject43, src_templateObject44, _templateObject45, _templateObject46, _templateObject47, _templateObject48, _templateObject49, _templateObject50, _templateObject51, _templateObject52, _templateObject53, _templateObject54, _templateObject55, _templateObject56, _templateObject57, _templateObject58, _templateObject59, _templateObject60, _templateObject61, _templateObject62, _templateObject63, _templateObject64, _templateObject65, _templateObject66, _templateObject67, _templateObject68, _templateObject69, _templateObject70, _templateObject71, _templateObject72, _templateObject73, _templateObject74, _templateObject75, _templateObject76, _templateObject77;
 
 function src_toConsumableArray(arr) { return src_arrayWithoutHoles(arr) || src_iterableToArray(arr) || src_unsupportedIterableToArray(arr) || src_nonIterableSpread(); }
 
@@ -6383,13 +6383,13 @@ function main() {
       var maxMatch = arg.match(/^max=(\d+)$/);
 
       if (arg === "dorm") {
-        options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject69 || (_templateObject69 = src_taggedTemplateLiteral(["Site Alpha Dormitory"])));
+        options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject74 || (_templateObject74 = src_taggedTemplateLiteral(["Site Alpha Dormitory"])));
       } else if (arg === "greenhouse") {
-        options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject70 || (_templateObject70 = src_taggedTemplateLiteral(["Site Alpha Greenhouse"])));
+        options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject75 || (_templateObject75 = src_taggedTemplateLiteral(["Site Alpha Greenhouse"])));
       } else if (arg === "quarry") {
-        options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject71 || (_templateObject71 = src_taggedTemplateLiteral(["Site Alpha Quarry"])));
+        options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject76 || (_templateObject76 = src_taggedTemplateLiteral(["Site Alpha Quarry"])));
       } else if (arg === "lab") {
-        options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject72 || (_templateObject72 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"])));
+        options/* default.location */.Z.location = (0,template_string/* $location */.PG)(_templateObject77 || (_templateObject77 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"])));
       } else if (arg.match(/^\d+$/)) {
         options/* default.stopTurnsSpent */.Z.stopTurnsSpent = (0,src_lib/* startingTurnsSpent */.Up)() + parseInt(arg);
       } else if (maxMatch) {
@@ -6426,6 +6426,7 @@ function main() {
     });
     dailies();
     var coldResWeightMultiplier = 1;
+    var spellDamageLevel = 0;
 
     if ((0,src_lib/* currentTurnsSpent */.OF)() === 0) {
       // New ascension. Reset goo weight.
@@ -6466,76 +6467,94 @@ function main() {
       }
 
       var itemDropWeight = (0,template_string/* $locations */.xw)(src_templateObject27 || (src_templateObject27 = src_taggedTemplateLiteral(["Site Alpha Quarry, Site Alpha Primary Lab"]))).includes(options/* default.location */.Z.location) ? 0 : 1;
+      var weight = (0,property/* get */.U2)("crimbo21GooWeight", 10);
+      var skill = undefined;
+
+      if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(src_templateObject28 || (src_templateObject28 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"])))) {
+        skill = (0,template_string/* $skills */.nx)(src_templateObject29 || (src_templateObject29 = src_taggedTemplateLiteral(["Saucegeyser"]))).filter(skill => (0,lib/* have */.lf)(skill)).sort((x, y) => (0,external_kolmafia_.mpCost)(x) - (0,external_kolmafia_.mpCost)(y))[0];
+        if (skill === undefined) throw "Need Saucegeyser for Lab.";
+      }
+
       var coldResTarget = Math.floor((15 + (0,src_lib/* todayTurnsSpent */.U)()) / 3);
 
       do {
         var forceEquip = [];
         var preventSlot = [];
 
-        if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(src_templateObject28 || (src_templateObject28 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"])))) {
-          var acc3 = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject29 || (src_templateObject29 = src_taggedTemplateLiteral(["Space Trip safety headphones"])))) ? (0,template_string/* $item */.xr)(src_templateObject30 || (src_templateObject30 = src_taggedTemplateLiteral(["Space Trip safety headphones"]))) : (0,template_string/* $item */.xr)(src_templateObject31 || (src_templateObject31 = src_taggedTemplateLiteral(["cozy scarf"])));
+        if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(src_templateObject31 || (src_templateObject31 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"])))) {
+          var acc3 = (0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject32 || (src_templateObject32 = src_taggedTemplateLiteral(["Space Trip safety headphones"])))) && spellDamageLevel >= 2 ? (0,template_string/* $item */.xr)(src_templateObject33 || (src_templateObject33 = src_taggedTemplateLiteral(["Space Trip safety headphones"]))) : (0,template_string/* $item */.xr)(src_templateObject34 || (src_templateObject34 = src_taggedTemplateLiteral(["cozy scarf"])));
 
-          if ((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(src_templateObject32 || (src_templateObject32 = src_taggedTemplateLiteral(["ert grey goo ring"])))) >= 2) {
+          if ((0,external_kolmafia_.availableAmount)((0,template_string/* $item */.xr)(src_templateObject35 || (src_templateObject35 = src_taggedTemplateLiteral(["ert grey goo ring"])))) >= 2) {
             // Equip two ert grey goo rings.
-            preventSlot.push.apply(preventSlot, src_toConsumableArray((0,template_string/* $slots */.ei)(src_templateObject33 || (src_templateObject33 = src_taggedTemplateLiteral(["acc1, acc2, acc3"])))));
-            (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(src_templateObject34 || (src_templateObject34 = src_taggedTemplateLiteral(["acc1"]))), (0,template_string/* $item */.xr)(src_templateObject35 || (src_templateObject35 = src_taggedTemplateLiteral(["ert grey goo ring"]))));
-            (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(src_templateObject36 || (src_templateObject36 = src_taggedTemplateLiteral(["acc2"]))), (0,template_string/* $item */.xr)(src_templateObject37 || (src_templateObject37 = src_taggedTemplateLiteral(["ert grey goo ring"]))));
-            (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(src_templateObject38 || (src_templateObject38 = src_taggedTemplateLiteral(["acc3"]))), acc3);
+            preventSlot.push.apply(preventSlot, src_toConsumableArray((0,template_string/* $slots */.ei)(src_templateObject36 || (src_templateObject36 = src_taggedTemplateLiteral(["acc1, acc2, acc3"])))));
+            (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(src_templateObject37 || (src_templateObject37 = src_taggedTemplateLiteral(["acc1"]))), (0,template_string/* $item */.xr)(src_templateObject38 || (src_templateObject38 = src_taggedTemplateLiteral(["ert grey goo ring"]))));
+            (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(src_templateObject39 || (src_templateObject39 = src_taggedTemplateLiteral(["acc2"]))), (0,template_string/* $item */.xr)(src_templateObject40 || (src_templateObject40 = src_taggedTemplateLiteral(["ert grey goo ring"]))));
+            (0,external_kolmafia_.equip)((0,template_string/* $slot */.Jh)(src_templateObject41 || (src_templateObject41 = src_taggedTemplateLiteral(["acc3"]))), acc3);
           }
 
-          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject39 || (src_templateObject39 = src_taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"]))))) {
-            preventSlot.push((0,template_string/* $slot */.Jh)(src_templateObject40 || (src_templateObject40 = src_taggedTemplateLiteral(["back"]))));
+          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject42 || (src_templateObject42 = src_taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"]))))) {
+            preventSlot.push((0,template_string/* $slot */.Jh)(src_templateObject43 || (src_templateObject43 = src_taggedTemplateLiteral(["back"]))));
 
             if ((0,property/* get */.U2)("retroCapeSuperhero") !== "heck" || (0,property/* get */.U2)("retroCapeWashingInstructions") !== "kill") {
               (0,external_kolmafia_.cliExecute)("retrocape heck kill");
             }
           }
 
-          if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject41 || (src_templateObject41 = src_taggedTemplateLiteral(["meteorb"]))))) (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(src_templateObject42 || (src_templateObject42 = src_taggedTemplateLiteral(["meteorb"]))));
-          forceEquip.push((0,template_string/* $item */.xr)(src_templateObject43 || (src_templateObject43 = src_taggedTemplateLiteral(["meteorb"]))));
+          if (spellDamageLevel >= 1) {
+            if (!(0,lib/* have */.lf)((0,template_string/* $item */.xr)(src_templateObject44 || (src_templateObject44 = src_taggedTemplateLiteral(["meteorb"]))))) (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(_templateObject45 || (_templateObject45 = src_taggedTemplateLiteral(["meteorb"]))));
+            forceEquip.push((0,template_string/* $item */.xr)(_templateObject46 || (_templateObject46 = src_taggedTemplateLiteral(["meteorb"]))));
+          }
 
-          if ((0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(src_templateObject44 || (src_templateObject44 = src_taggedTemplateLiteral(["Left-Hand Man"])))) {
-            forceEquip.push((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject45 || (_templateObject45 = src_taggedTemplateLiteral(["HOA regulation book"])))) ? (0,template_string/* $item */.xr)(_templateObject46 || (_templateObject46 = src_taggedTemplateLiteral(["HOA regulation book"]))) : (0,template_string/* $item */.xr)(_templateObject47 || (_templateObject47 = src_taggedTemplateLiteral(["goo magnet"]))));
+          if (spellDamageLevel >= 2 && (0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(_templateObject47 || (_templateObject47 = src_taggedTemplateLiteral(["Left-Hand Man"]))) && (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject48 || (_templateObject48 = src_taggedTemplateLiteral(["HOA regulation book"]))))) {
+            forceEquip.push((0,template_string/* $item */.xr)(_templateObject49 || (_templateObject49 = src_taggedTemplateLiteral(["HOA regulation book"]))));
+          }
+
+          var offHandSlots = (0,external_kolmafia_.myFamiliar)() === (0,template_string/* $familiar */.HP)(_templateObject50 || (_templateObject50 = src_taggedTemplateLiteral(["Left-Hand Man"]))) ? 2 : 1;
+          var offHandForce = forceEquip.filter(item => (0,external_kolmafia_.toSlot)(item) === (0,template_string/* $slot */.Jh)(_templateObject51 || (_templateObject51 = src_taggedTemplateLiteral(["off-hand"])))).length;
+
+          if (offHandForce < offHandSlots) {
+            forceEquip.push((0,template_string/* $item */.xr)(_templateObject52 || (_templateObject52 = src_taggedTemplateLiteral(["goo magnet"]))));
           }
         } else {
-          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject48 || (_templateObject48 = src_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))) && (0,property/* get */.U2)("_chestXRayUsed") < 3) {
-            forceEquip.push((0,template_string/* $item */.xr)(_templateObject49 || (_templateObject49 = src_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"]))));
+          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject53 || (_templateObject53 = src_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"])))) && (0,property/* get */.U2)("_chestXRayUsed") < 3) {
+            forceEquip.push((0,template_string/* $item */.xr)(_templateObject54 || (_templateObject54 = src_taggedTemplateLiteral(["Lil' Doctor\u2122 bag"]))));
           } // Force goo magnet for all but the last 30 turns.
 
 
-          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject50 || (_templateObject50 = src_taggedTemplateLiteral(["goo magnet"])))) && options/* default.stopTurnsSpent */.Z.stopTurnsSpent - (0,src_lib/* currentTurnsSpent */.OF)() >= 30) {
-            forceEquip.push((0,template_string/* $item */.xr)(_templateObject51 || (_templateObject51 = src_taggedTemplateLiteral(["goo magnet"]))));
+          if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject55 || (_templateObject55 = src_taggedTemplateLiteral(["goo magnet"])))) && options/* default.stopTurnsSpent */.Z.stopTurnsSpent - (0,src_lib/* currentTurnsSpent */.OF)() >= 30) {
+            forceEquip.push((0,template_string/* $item */.xr)(_templateObject56 || (_templateObject56 = src_taggedTemplateLiteral(["goo magnet"]))));
           }
         }
 
-        new Requirement(["".concat(itemDropWeight, " Item Drop"), "".concat((5 * coldResWeightMultiplier).toFixed(0), " Cold Resistance")].concat(src_toConsumableArray(options/* default.location */.Z.location === (0,template_string/* $location */.PG)(_templateObject52 || (_templateObject52 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) ? ["0.1 Spell Damage Percent, 0.1 Mysticality Percent"] : [])), {
+        new Requirement([].concat(src_toConsumableArray(itemDropWeight > 0 ? ["".concat(itemDropWeight, " Item Drop")] : []), ["".concat((5 * coldResWeightMultiplier).toFixed(0), " Cold Resistance")], src_toConsumableArray(options/* default.location */.Z.location === (0,template_string/* $location */.PG)(_templateObject57 || (_templateObject57 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) ? ["0.1 Spell Damage Percent, 0.1 Mysticality Percent"] : [])), {
           forceEquip: forceEquip,
-          preventEquip: (0,template_string/* $items */.vS)(_templateObject53 || (_templateObject53 = src_taggedTemplateLiteral(["broken champagne bottle"]))),
+          preventEquip: (0,template_string/* $items */.vS)(_templateObject58 || (_templateObject58 = src_taggedTemplateLiteral(["broken champagne bottle"]))),
           preventSlot: preventSlot,
-          bonusEquip: new Map([[(0,template_string/* $item */.xr)(_templateObject54 || (_templateObject54 = src_taggedTemplateLiteral(["bag of many confections"]))), 1000]])
+          bonusEquip: new Map([[(0,template_string/* $item */.xr)(_templateObject59 || (_templateObject59 = src_taggedTemplateLiteral(["bag of many confections"]))), 1000]])
         }).maximize();
+
+        if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(_templateObject60 || (_templateObject60 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) && skill && predictedDamage(skill) < expectedHp(weight) && spellDamageLevel < 2) {
+          spellDamageLevel++;
+          (0,external_kolmafia_.print)("Failed to get enough spell damage. Moving to spell damage level ".concat(spellDamageLevel, "."), "blue");
+        }
 
         if (modifier_get("Cold Resistance") < coldResTarget && Math.round(coldResWeightMultiplier) < 32) {
           coldResWeightMultiplier *= 2;
           (0,external_kolmafia_.print)("Missed target. Updated resistance weight multiplier to ".concat(coldResWeightMultiplier.toFixed(1), "."), "blue");
         }
-      } while (modifier_get("Cold Resistance") < coldResTarget && Math.round(coldResWeightMultiplier) < 32);
+      } while (modifier_get("Cold Resistance") < coldResTarget && Math.round(coldResWeightMultiplier) < 32 || options/* default.location */.Z.location === (0,template_string/* $location */.PG)(src_templateObject30 || (src_templateObject30 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) && skill && predictedDamage(skill) < expectedHp(weight) && spellDamageLevel < 2);
 
       boost("Cold Resistance", coldResTarget, 500);
 
-      if ((0,template_string/* $locations */.xw)(_templateObject55 || (_templateObject55 = src_taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse"]))).includes(options/* default.location */.Z.location)) {
-        boost("Item Drop", options/* default.location */.Z.location === (0,template_string/* $location */.PG)(_templateObject56 || (_templateObject56 = src_taggedTemplateLiteral(["Site Alpha Greenhouse"]))) ? 900 : 300, 50);
+      if ((0,template_string/* $locations */.xw)(_templateObject61 || (_templateObject61 = src_taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse"]))).includes(options/* default.location */.Z.location)) {
+        boost("Item Drop", options/* default.location */.Z.location === (0,template_string/* $location */.PG)(_templateObject62 || (_templateObject62 = src_taggedTemplateLiteral(["Site Alpha Greenhouse"]))) ? 900 : 300, 50);
       }
 
       (0,external_kolmafia_.print)();
       (0,external_kolmafia_.print)("==== Turn ".concat((0,src_lib/* todayTurnsSpent */.U)(), " out of ").concat(options/* default.stopTurnsSpent */.Z.stopTurnsSpent - (0,src_lib/* startingTurnsSpent */.Up)(), ". ===="), "blue");
       (0,external_kolmafia_.print)("Cold Res Required: ".concat(coldResTarget, ", Achieved: ").concat(modifier_get("Cold Resistance")), "blue");
-      var skill = undefined;
 
-      if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(_templateObject57 || (_templateObject57 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"])))) {
-        skill = (0,template_string/* $skills */.nx)(_templateObject58 || (_templateObject58 = src_taggedTemplateLiteral(["Saucegeyser"]))).filter(skill => (0,lib/* have */.lf)(skill)).sort((x, y) => (0,external_kolmafia_.mpCost)(x) - (0,external_kolmafia_.mpCost)(y))[0];
-        if (skill === undefined) throw "Need Saucegeyser for Lab.";
-        var weight = (0,property/* get */.U2)("crimbo21GooWeight", 10);
+      if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(_templateObject63 || (_templateObject63 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) && skill) {
         (0,external_kolmafia_.print)("Predicting ".concat(predictedDamage(skill).toFixed(0), " damage against ").concat(expectedHp(weight).toFixed(0), " HP."), "blue");
 
         if (predictedDamage(skill) < expectedHp(weight)) {
@@ -6567,11 +6586,11 @@ function main() {
         }
       }
 
-      combat.Macro.if_((0,template_string/* $monster */.O4)(_templateObject59 || (_templateObject59 = src_taggedTemplateLiteral(["gooified elf-thing"]))), combat.Macro.item((0,template_string/* $item */.xr)(_templateObject60 || (_templateObject60 = src_taggedTemplateLiteral(["human musk"]))))).if_((0,template_string/* $monster */.O4)(_templateObject61 || (_templateObject61 = src_taggedTemplateLiteral(["gooified flower"]))), combat.Macro.item((0,template_string/* $item */.xr)(_templateObject62 || (_templateObject62 = src_taggedTemplateLiteral(["human musk"]))))).externalIf(options/* default.location */.Z.location !== (0,template_string/* $location */.PG)(_templateObject63 || (_templateObject63 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) && stasisFamiliars.includes((0,external_kolmafia_.myFamiliar)()), combat.Macro.while_("!pastround 10 && !hpbelow 250", combat.Macro.item((0,template_string/* $item */.xr)(_templateObject64 || (_templateObject64 = src_taggedTemplateLiteral(["seal tooth"])))))).kill(skill).setAutoAttack();
+      combat.Macro.if_((0,template_string/* $monster */.O4)(_templateObject64 || (_templateObject64 = src_taggedTemplateLiteral(["gooified elf-thing"]))), combat.Macro.item((0,template_string/* $item */.xr)(_templateObject65 || (_templateObject65 = src_taggedTemplateLiteral(["human musk"]))))).if_((0,template_string/* $monster */.O4)(_templateObject66 || (_templateObject66 = src_taggedTemplateLiteral(["gooified flower"]))), combat.Macro.item((0,template_string/* $item */.xr)(_templateObject67 || (_templateObject67 = src_taggedTemplateLiteral(["human musk"]))))).externalIf(options/* default.location */.Z.location !== (0,template_string/* $location */.PG)(_templateObject68 || (_templateObject68 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) && stasisFamiliars.includes((0,external_kolmafia_.myFamiliar)()), combat.Macro.while_("!pastround 10 && !hpbelow 250", combat.Macro.item((0,template_string/* $item */.xr)(_templateObject69 || (_templateObject69 = src_taggedTemplateLiteral(["seal tooth"])))))).kill(skill).setAutoAttack();
 
       if ((0,external_kolmafia_.myMp)() < 200) {
-        if ((0,property/* get */.U2)("_sausagesEaten") < 23 && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject65 || (_templateObject65 = src_taggedTemplateLiteral(["magical sausage"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject66 || (_templateObject66 = src_taggedTemplateLiteral(["magical sausage casing"])))))) {
-          (0,external_kolmafia_.eat)((0,template_string/* $item */.xr)(_templateObject67 || (_templateObject67 = src_taggedTemplateLiteral(["magical sausage"]))));
+        if ((0,property/* get */.U2)("_sausagesEaten") < 23 && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject70 || (_templateObject70 = src_taggedTemplateLiteral(["magical sausage"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject71 || (_templateObject71 = src_taggedTemplateLiteral(["magical sausage casing"])))))) {
+          (0,external_kolmafia_.eat)((0,template_string/* $item */.xr)(_templateObject72 || (_templateObject72 = src_taggedTemplateLiteral(["magical sausage"]))));
         } else {
           (0,external_kolmafia_.restoreMp)(200);
         }
@@ -6606,13 +6625,13 @@ function main() {
         (0,property/* set */.t8)("crimbo21GooWeight", parseInt(encounterMatch[1]));
       }
 
-      if ((0,property/* get */.U2)("lastEncounter").trim() === "" && (0,external_kolmafia_.lastChoice)() === 1461) {
+      if (["", "Hello Knob My Old Friend"].includes((0,property/* get */.U2)("lastEncounter").trim()) && (0,external_kolmafia_.lastChoice)() === 1461) {
         // Just hit the NC. Decrement turns spent to adjust for the fact that Mafia doesn't count it.
         (0,external_kolmafia_.print)("Hit the NC. Adjusting turns spent...", "blue");
         (0,src_lib/* decrementStartingTurnsSpent */.cI)();
       }
 
-      if ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(_templateObject68 || (_templateObject68 = src_taggedTemplateLiteral(["Beaten Up"]))))) {
+      if ((0,lib/* have */.lf)((0,template_string/* $effect */._G)(_templateObject73 || (_templateObject73 = src_taggedTemplateLiteral(["Beaten Up"]))))) {
         throw "You're beaten up! Fix it and try adventuring again.";
       }
     }
