@@ -6285,9 +6285,10 @@ mood_defineProperty(Mood, "defaultOptions", {
   reserveMp: 0
 });
 ;// CONCATENATED MODULE: ./src/mood.ts
-var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, src_mood_templateObject11, src_mood_templateObject12, mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16;
+var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, src_mood_templateObject11, src_mood_templateObject12, mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17;
 
 function src_mood_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
 
 
 
@@ -6315,7 +6316,12 @@ function mood() {
     mood.skill((0,template_string/* $skill */.tm)(mood_templateObject16 || (mood_templateObject16 = src_mood_taggedTemplateLiteral(["Song of Sauce"]))));
   }
 
-  mood.drive(Driving.Observantly);
+  if (options/* default.location */.Z.location === (0,template_string/* $location */.PG)(mood_templateObject17 || (mood_templateObject17 = src_mood_taggedTemplateLiteral(["Site Alpha Primary Lab"])))) {
+    mood.drive((0,src_lib/* remainingTurns */.bg)() >= 30 ? Driving.Intimidatingly : Driving.Safely);
+  } else {
+    mood.drive(Driving.Observantly);
+  }
+
   return mood;
 }
 ;// CONCATENATED MODULE: ./src/properties.ts
