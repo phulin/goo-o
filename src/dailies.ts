@@ -15,6 +15,7 @@ import {
   $familiar,
   $item,
   $location,
+  $locations,
   $monster,
   $skill,
   $thrall,
@@ -96,7 +97,11 @@ function voterSetup(): void {
 }
 
 export function dailies(): void {
-  if (have($familiar`Mu`) && !have($item`luck incense`)) {
+  if (
+    !$locations`Site Alpha Quarry, Site Alpha Primary Lab`.includes(options.location) &&
+    have($familiar`Mu`) &&
+    !have($item`luck incense`)
+  ) {
     useFamiliar($familiar`Mu`);
     use($item`box of Familiar Jacks`);
   }
