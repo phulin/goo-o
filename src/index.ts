@@ -258,12 +258,9 @@ export function main(argString = ""): void {
             if (!have($item`meteorb`)) retrieveItem($item`meteorb`);
             forceEquip.push($item`meteorb`);
           }
-          if (
-            spellDamageLevel >= 2 &&
-            myFamiliar() === $familiar`Left-Hand Man` &&
-            have($item`HOA regulation book`)
-          ) {
-            forceEquip.push($item`HOA regulation book`);
+          if (spellDamageLevel >= 2 && myFamiliar() === $familiar`Left-Hand Man`) {
+            if (!have($item`snow machine`)) retrieveItem($item`snow machine`);
+            forceEquip.push($item`snow mobile`);
           }
 
           const offHandSlots = myFamiliar() === $familiar`Left-Hand Man` ? 2 : 1;
