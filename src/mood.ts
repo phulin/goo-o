@@ -1,5 +1,6 @@
 import { myPrimestat } from "kolmafia";
 import { $item, $location, $skill, $stat, AsdonMartin, Mood } from "libram";
+import { remainingTurns } from "./lib";
 import options from "./options";
 
 export function mood(): Mood {
@@ -29,7 +30,13 @@ export function mood(): Mood {
     mood.skill($skill`Song of Sauce`);
   }
 
-  mood.drive(AsdonMartin.Driving.Observantly);
+  if (options.location === $location`Site Alpha Primary Lab`) {
+    mood.drive(
+      remainingTurns() >= 30 ? AsdonMartin.Driving.Intimidatingly : AsdonMartin.Driving.Safely
+    );
+  } else {
+    mood.drive(AsdonMartin.Driving.Observantly);
+  }
 
   return mood;
 }
