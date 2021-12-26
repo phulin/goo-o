@@ -3169,35 +3169,57 @@ $({
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Up": () => (/* binding */ startingTurnsSpent)
 /* harmony export */ });
-/* unused harmony exports currentTurnsSpent, todayTurnsSpent, decrementStartingTurnsSpent */
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8588);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6672);
+/* unused harmony exports currentTurnsSpent, currentTurnsSpentForColdRes, todayTurnsSpent, todayTurnsSpentForColdRes, totalTurnsToday, remainingTurns, incrementTurnsSpentAdjustment, turnsSpentAdjustment */
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
+/* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8588);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(678);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6672);
+/* harmony import */ var _options__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(330);
 var _templateObject;
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
+
+
 function currentTurnsSpent() {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_0__/* .sum */ .Sm)( // eslint-disable-next-line libram/verify-constants
-  (0,libram__WEBPACK_IMPORTED_MODULE_1__/* .$locations */ .xw)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry, Site Alpha Primary Lab"]))), loc => loc.turnsSpent);
+  return (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .sum */ .Sm)( // eslint-disable-next-line libram/verify-constants
+  (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$locations */ .xw)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry, Site Alpha Primary Lab"]))), loc => loc.turnsSpent);
+}
+function currentTurnsSpentForColdRes() {
+  return currentTurnsSpent() + turnsSpentAdjustment();
 }
 function startingTurnsSpent() {
-  var result = (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
+  var result = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
 
-  if (Math.floor((currentTurnsSpent() - result + 15) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
-    result = currentTurnsSpent() - ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21ColdResistance", 0) * 3 - 15);
+  if (Math.floor((currentTurnsSpentForColdRes() - result + 15) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
+    var oldResult = result;
+    result = currentTurnsSpentForColdRes() - ((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0) * 3 - 15);
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Inconsistent stored turns spent ".concat(oldResult, ". Adjusting down to ").concat(result, "."), "red");
   }
 
-  (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
+  (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
   return result;
 }
 function todayTurnsSpent() {
   return currentTurnsSpent() - startingTurnsSpent();
 }
-function decrementStartingTurnsSpent() {
-  var current = get("_crimbo21StartingTurnsSpent", currentTurnsSpent());
-  set("_crimbo21StartingTurnsSpent", current - 1);
+function todayTurnsSpentForColdRes() {
+  return currentTurnsSpentForColdRes() - startingTurnsSpent();
+}
+function totalTurnsToday() {
+  return options.stopTurnsSpent - startingTurnsSpent();
+}
+function remainingTurns() {
+  return options.stopTurnsSpent - currentTurnsSpent();
+}
+function incrementTurnsSpentAdjustment() {
+  var current = get("_crimbo21TurnsSpentAdjustment", 0);
+  set("_crimbo21TurnsSpentAdjustment", current - 1);
+}
+function turnsSpentAdjustment() {
+  return (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
 }
 
 /***/ }),
@@ -3209,8 +3231,8 @@ function decrementStartingTurnsSpent() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(678);
-/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7442);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7442);
 var _templateObject;
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
@@ -3218,8 +3240,8 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  location: (0,libram__WEBPACK_IMPORTED_MODULE_0__/* .$location */ .PG)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory"]))),
-  stopTurnsSpent: (0,_lib__WEBPACK_IMPORTED_MODULE_1__/* .startingTurnsSpent */ .Up)() + 150
+  location: (0,libram__WEBPACK_IMPORTED_MODULE_1__/* .$location */ .PG)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory"]))),
+  stopTurnsSpent: (0,_lib__WEBPACK_IMPORTED_MODULE_0__/* .startingTurnsSpent */ .Up)() + 150
 });
 
 /***/ }),
