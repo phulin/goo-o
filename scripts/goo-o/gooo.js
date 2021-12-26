@@ -6709,7 +6709,7 @@ function remainingTurns() {
 }
 function incrementTurnsSpentAdjustment() {
   var current = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
-  (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21TurnsSpentAdjustment", current - 1);
+  (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21TurnsSpentAdjustment", current + 1);
 }
 function turnsSpentAdjustment() {
   return (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);

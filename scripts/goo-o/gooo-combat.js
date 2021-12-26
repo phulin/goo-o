@@ -3216,7 +3216,7 @@ function remainingTurns() {
 }
 function incrementTurnsSpentAdjustment() {
   var current = get("_crimbo21TurnsSpentAdjustment", 0);
-  set("_crimbo21TurnsSpentAdjustment", current - 1);
+  set("_crimbo21TurnsSpentAdjustment", current + 1);
 }
 function turnsSpentAdjustment() {
   return (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
