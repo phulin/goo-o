@@ -84,8 +84,12 @@ function getSongLimit() {
  */
 
 function isSong(skillOrEffect) {
-  var skill = skillOrEffect instanceof Effect ? toSkill(skillOrEffect) : skillOrEffect;
-  return skill.class === $class(_templateObject || (_templateObject = _taggedTemplateLiteral(["Accordion Thief"]))) && skill.buff;
+  if (skillOrEffect instanceof Effect && skillOrEffect.attributes.includes("song")) {
+    return true;
+  } else {
+    var skill = skillOrEffect instanceof Effect ? toSkill(skillOrEffect) : skillOrEffect;
+    return skill.class === $class(_templateObject || (_templateObject = _taggedTemplateLiteral(["Accordion Thief"]))) && skill.buff;
+  }
 }
 /**
  * List all active Effects
@@ -3165,7 +3169,7 @@ $({
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Up": () => (/* binding */ startingTurnsSpent)
 /* harmony export */ });
-/* unused harmony exports currentTurnsSpent, todayTurnsSpent */
+/* unused harmony exports currentTurnsSpent, todayTurnsSpent, decrementStartingTurnsSpent */
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8588);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6672);
@@ -3181,15 +3185,19 @@ function currentTurnsSpent() {
 function startingTurnsSpent() {
   var result = (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
 
-  if (Math.floor((currentTurnsSpent() - result + 16) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
-    result = currentTurnsSpent() - ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21ColdResistance", 0) * 3 - 16);
+  if (Math.floor((currentTurnsSpent() - result + 15) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
+    result = currentTurnsSpent() - ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .get */ .U2)("_crimbo21ColdResistance", 0) * 3 - 15);
+    (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
   }
 
-  (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
   return result;
 }
 function todayTurnsSpent() {
   return currentTurnsSpent() - startingTurnsSpent();
+}
+function decrementStartingTurnsSpent() {
+  var current = get("_crimbo21StartingTurnsSpent", currentTurnsSpent());
+  set("_crimbo21StartingTurnsSpent", current - 1);
 }
 
 /***/ }),
