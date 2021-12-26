@@ -9,22 +9,10 @@ import {
   spleenLimit,
   use,
 } from "kolmafia";
-import {
-  $class,
-  $effect,
-  $item,
-  $items,
-  $location,
-  $skill,
-  get,
-  getModifier,
-  have,
-  MayoClinic,
-} from "libram";
+import { $class, $effect, $item, $items, $skill, get, getModifier, have, MayoClinic } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { acquire } from "./acquire";
-import { currentTurnsSpent } from "./lib";
-import options from "./options";
+import { remainingTurns } from "./lib";
 
 const modifierCandidatePotions = {
   "Item Drop": [
@@ -159,17 +147,12 @@ export function boost(
   target: number,
   maxUnitCost: number
 ): void {
-  const remainingTurnsSpent = Math.ceil(
-    (options.stopTurnsSpent - currentTurnsSpent()) *
-      (options.location === $location`Site Alpha Primary Lab` ? 10 / 11 : 1)
-  );
-
   const dailyBuffs = modifierDailyBuffs[modifier] ?? [];
   for (const [effect, turnsAvailable, available] of dailyBuffs) {
     if (getModifier(modifier) >= target) break;
     // Only activate cold buffs when they'll cover our remaining time here.
-    if (modifier === "Cold Resistance" && turnsAvailable() < remainingTurnsSpent) continue;
-    while (available() && turnsAvailable() > 0 && haveEffect(effect) < remainingTurnsSpent) {
+    if (modifier === "Cold Resistance" && turnsAvailable() < remainingTurns()) continue;
+    while (available() && turnsAvailable() > 0 && haveEffect(effect) < remainingTurns()) {
       cliExecute(effect.default);
       if (mySpleenUse() >= 3 - get("currentMojoFilters")) {
         use(3 - get("currentMojoFilters"), $item`mojo filter`);
@@ -187,6 +170,6 @@ export function boost(
   for (const candidate of candidates) {
     if (getModifier(modifier) >= target) break;
     if (candidate.unitCost() > maxUnitCost) break;
-    candidate.consume(remainingTurnsSpent, maxUnitCost);
+    candidate.consume(remainingTurns(), maxUnitCost);
   }
 }

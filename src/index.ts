@@ -55,9 +55,12 @@ import { Macro } from "./combat";
 import { dailies } from "./dailies";
 import {
   currentTurnsSpent,
-  decrementStartingTurnsSpent,
+  incrementTurnsSpentAdjustment,
+  remainingTurns,
   startingTurnsSpent,
   todayTurnsSpent,
+  todayTurnsSpentForColdRes,
+  totalTurnsToday,
 } from "./lib";
 import { mood } from "./mood";
 import options from "./options";
@@ -172,13 +175,8 @@ export function main(argString = ""): void {
       "blue"
     );
 
-    while (currentTurnsSpent() < options.stopTurnsSpent && myAdventures() > 0) {
-      // 1/11 of the lab adventures still increment turns spent but don't cost a turn.
-      const remainingTurnsSpent = Math.ceil(
-        (options.stopTurnsSpent - currentTurnsSpent()) *
-          (options.location === $location`Site Alpha Primary Lab` ? 10 / 11 : 1)
-      );
-      const remaining = clamp(remainingTurnsSpent, 0, myAdventures());
+    while (remainingTurns() > 0 && myAdventures() > 0) {
+      const remaining = clamp(remainingTurns(), 0, myAdventures());
 
       mood().execute(remaining);
       if (have($item`velour viscometer`) && !have($effect`Scariersauce`)) {
@@ -230,7 +228,8 @@ export function main(argString = ""): void {
         if (skill === undefined) throw "Need Saucegeyser for Lab.";
       }
 
-      const coldResTarget = Math.floor((15 + todayTurnsSpent()) / 3);
+      const coldResTarget = Math.floor((15 + todayTurnsSpentForColdRes()) / 3);
+      let madeProgress;
       do {
         const forceEquip = [];
         const preventSlot = [];
@@ -298,12 +297,15 @@ export function main(argString = ""): void {
           }
         ).maximize();
 
+        madeProgress = false;
+
         if (
           options.location === $location`Site Alpha Primary Lab` &&
           skill &&
           predictedDamage(skill) < expectedHp(weight) &&
           spellDamageLevel < 2
         ) {
+          madeProgress = true;
           spellDamageLevel++;
           print(
             `Failed to get enough spell damage. Moving to spell damage level ${spellDamageLevel}.`,
@@ -315,6 +317,7 @@ export function main(argString = ""): void {
           getModifier("Cold Resistance") < coldResTarget &&
           Math.round(coldResWeightMultiplier) < 32
         ) {
+          madeProgress = true;
           coldResWeightMultiplier *= 2;
           print(
             `Missed target. Updated resistance weight multiplier to ${coldResWeightMultiplier.toFixed(
@@ -323,14 +326,7 @@ export function main(argString = ""): void {
             "blue"
           );
         }
-      } while (
-        (getModifier("Cold Resistance") < coldResTarget &&
-          Math.round(coldResWeightMultiplier) < 32) ||
-        (options.location === $location`Site Alpha Primary Lab` &&
-          skill &&
-          predictedDamage(skill) < expectedHp(weight) &&
-          spellDamageLevel < 2)
-      );
+      } while (madeProgress);
 
       boost("Cold Resistance", coldResTarget, 500);
       if ($locations`Site Alpha Dormitory, Site Alpha Greenhouse`.includes(options.location)) {
@@ -338,12 +334,7 @@ export function main(argString = ""): void {
       }
 
       print();
-      print(
-        `==== Turn ${todayTurnsSpent()} out of ${
-          options.stopTurnsSpent - startingTurnsSpent()
-        }. ====`,
-        "blue"
-      );
+      print(`==== Turn ${todayTurnsSpent()} out of ${totalTurnsToday()}. ====`, "blue");
       print(
         `Cold Res Required: ${coldResTarget}, Achieved: ${getModifier("Cold Resistance")}`,
         "blue"
@@ -442,7 +433,7 @@ export function main(argString = ""): void {
       ) {
         // Just hit the NC. Decrement turns spent to adjust for the fact that Mafia doesn't count it.
         print("Hit the NC. Adjusting turns spent...", "blue");
-        decrementStartingTurnsSpent();
+        incrementTurnsSpentAdjustment();
       }
 
       if (have($effect`Beaten Up`)) {
