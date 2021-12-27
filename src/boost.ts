@@ -98,7 +98,7 @@ const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolea
       $effect`Rainbow Vaccine`,
       () => 30,
       () => get("spacegateAlways") && get("spacegateVaccine1") && !get("_spacegateVaccine"),
-    ]
+    ],
   ],
 };
 
