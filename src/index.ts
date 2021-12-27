@@ -73,7 +73,7 @@ const stasisFamiliars = $familiars`Stocking Mimic, Ninja Pirate Zombie Robot, Co
 
 function expectedHp(weight: number): number {
   // This is the maximum possible HP we'd expect.
-  return 1.1 * (3 * (weight - 10) ** 3 + 100);
+  return 1.1 * (3 * (weight - (weight > 40 ? 8 : 10)) ** 3 + 100);
 }
 
 function lanternMultiplier(skill: Skill) {

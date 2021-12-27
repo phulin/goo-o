@@ -21,7 +21,7 @@ export class Macro extends LibramMacro {
             )
         )
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .externalIf(skill !== undefined, Macro.skill(skill!))
+        .externalIf(skill !== undefined, Macro.skill(skill!).repeat())
         .trySkill($skill`Stuffed Mortar Shell`)
         .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
         .while_("hasskill Weapon of the Pastalord", Macro.skill($skill`Weapon of the Pastalord`))

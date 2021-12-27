@@ -1,4 +1,5 @@
 import {
+  changeMcd,
   cliExecute,
   myClass,
   myPrimestat,
@@ -97,6 +98,7 @@ function voterSetup(): void {
 }
 
 export function dailies(): void {
+  changeMcd(0);
   if (!$locations`Site Alpha Quarry, Site Alpha Primary Lab`.includes(options.location)) {
     if (have($familiar`Mu`) && !have($item`luck incense`)) {
       useFamiliar($familiar`Mu`);
