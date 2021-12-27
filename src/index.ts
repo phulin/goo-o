@@ -508,15 +508,18 @@ export function main(argString = ""): void {
         }
       }
 
-      const macro = Macro.externalIf(settingUpLabSnow, labSnowFreeRun?.macro ?? new Macro())
-        .if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
-        .if_($monster`gooified flower`, Macro.item($item`human musk`))
-        .externalIf(
-          options.location !== $location`Site Alpha Primary Lab` &&
-            stasisFamiliars.includes(myFamiliar()),
-          Macro.while_("!pastround 10 && !hpbelow 250", Macro.item($item`seal tooth`))
-        )
-        .kill(skill);
+      const macro =
+        options.location === $location`Site Alpha Primary Lab` && skill
+          ? Macro.externalIf(settingUpLabSnow, labSnowFreeRun?.macro ?? new Macro())
+              .skill(skill)
+              .repeat()
+          : Macro.if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
+              .if_($monster`gooified flower`, Macro.item($item`human musk`))
+              .externalIf(
+                stasisFamiliars.includes(myFamiliar()),
+                Macro.while_("!pastround 10 && !hpbelow 250", Macro.item($item`seal tooth`))
+              )
+              .kill();
 
       if (myMp() < 200) {
         if (
