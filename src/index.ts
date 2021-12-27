@@ -70,6 +70,7 @@ import options from "./options";
 import { propertyManager } from "./properties";
 
 const stasisFamiliars = $familiars`Stocking Mimic, Ninja Pirate Zombie Robot, Cocoabo`;
+const highDamageSkills = $skills`Fearful Fettucini, Saucegeyser, Weapon of the Pastalord`;
 
 function expectedHp(weight: number): number {
   // This is the maximum possible HP we'd expect.
@@ -137,20 +138,27 @@ function lanternMultiplier(skill: Skill) {
 }
 
 function predictedDamage(skill: Skill): number {
-  const multiplier =
-    skill === $skill`Saucegeyser`
-      ? 0.4
-      : skill === $skill`Weapon of the Pastalord` && !haveEquipped($item`aerogel apron`)
-      ? 0.25
-      : 0.5;
+  const multiplier = () => {
+    switch (skill) {
+      case $skill`Saucegeyser`:
+        return 0.4;
+      case $skill`Weapon of the Pastalord`:
+        return haveEquipped($item`aerogel apron`) ? 0.5 : 0.25;
+      case $skill`Fearful Fettucini`:
+        return haveEquipped($item`velour veil`) ? 1.5 : 0.5;
+      default:
+        return 0;
+    }
+  };
   const criticalMultiplier = () =>
     getModifier("Spell Critical Percent") >= 89
       ? haveEquipped($item`dark baconstone ring`)
         ? 3
         : 2
       : 1;
+
   return (
-    multiplier *
+    multiplier() *
     myBuffedstat($stat`Mysticality`) *
     (1 + getModifier("Spell Damage Percent") / 100) *
     criticalMultiplier() *
@@ -204,6 +212,8 @@ function constructLabOutfit(spellDamageLevel: number, skill: Skill | undefined) 
     }
     if (skill === $skill`Weapon of the Pastalord` && have($item`aerogel apron`)) {
       forceEquip.push($item`aerogel apron`);
+    } else if (skill === $skill`Fearful Fettucini` && have($item`velour veil`)) {
+      forceEquip.push($item`velour veil`);
     }
   }
 
@@ -226,6 +236,24 @@ function constructNonLabOutfit() {
     forceEquip.push($item`goo magnet`);
   }
   return new Requirement([], { forceEquip });
+}
+
+function chooseCombatSkill() {
+  if (options.location !== $location`Site Alpha Primary Lab`) return undefined;
+
+  if (have($item`velour veil`) && have($skill`Fearful Fettucini`)) {
+    return $skill`Fearful Fettucini`;
+  }
+
+  const available = highDamageSkills.filter((skill) => have(skill))[0];
+
+  if (available === undefined) {
+    throw `Need ${highDamageSkills.slice(0, -1).join(", ")} or ${
+      highDamageSkills.slice(-1)[0]
+    } for Lab.`;
+  }
+
+  return available;
 }
 
 export function main(argString = ""): void {
@@ -351,18 +379,12 @@ export function main(argString = ""): void {
         : 1;
 
       const weight = get("crimbo21GooWeight", 10);
-
-      let skill: Skill | undefined = undefined;
-      if (options.location === $location`Site Alpha Primary Lab`) {
-        skill = $skills`Fearful Fettucini, Saucegeyser, Weapon of the Pastalord`.filter((skill) =>
-          have(skill)
-        )[0];
-        if (skill === undefined) throw "Need Saucegeyser or Fearful Fettucini for Lab.";
-      }
-
+      const skill = chooseCombatSkill();
       const coldResTarget = Math.floor((15 + todayTurnsSpentForColdRes()) / 3);
+
       let madeProgress;
       let labSnowFreeRun: FreeRun | undefined = undefined;
+
       do {
         let requirement = new Requirement(
           [
