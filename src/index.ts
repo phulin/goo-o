@@ -8,7 +8,6 @@ import {
   haveEquipped,
   inMultiFight,
   lastChoice,
-  mpCost,
   myAdventures,
   myBuffedstat,
   myFamiliar,
@@ -28,6 +27,7 @@ import {
   visitUrl,
 } from "kolmafia";
 import {
+  $class,
   $effect,
   $familiar,
   $familiars,
@@ -42,6 +42,8 @@ import {
   $slots,
   $stat,
   clamp,
+  ensureFreeRun,
+  FreeRun,
   get,
   getBanishedMonsters,
   getModifier,
@@ -49,6 +51,7 @@ import {
   Requirement,
   set,
   sinceKolmafiaRevision,
+  sumNumbers,
 } from "libram";
 import { boost } from "./boost";
 import { Macro } from "./combat";
@@ -73,19 +76,73 @@ function expectedHp(weight: number): number {
   return 1.1 * (3 * (weight - 10) ** 3 + 100);
 }
 
-function predictedDamage(skill: Skill): number {
-  const multiplier = skill === $skill`Weapon of the Pastalord` ? 0.5 : 0.4;
-  const hotDoubled =
-    ((skill === $skill`Saucegeyser` &&
-      getModifier("Hot Spell Damage") > getModifier("Cold Spell Damage")) ||
-      have($effect`Spirit of Cayenne`)) &&
-    haveEquipped($item`meteorb`);
-  const lanternCount =
-    (haveEquipped($item`unwrapped knock-off retro superhero cape`) &&
+function lanternMultiplier(skill: Skill) {
+  let element: "hot" | "cold" | "stench" | "spooky" | "sleaze";
+  if (skill === $skill`Saucegeyser`) {
+    element = getModifier("Hot Spell Damage") > getModifier("Cold Spell Damage") ? "hot" : "cold";
+  } else if (skill === $skill`Fearful Fettucini`) {
+    element = "spooky";
+  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Cayenne`)) {
+    element = "hot";
+  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Peppermint`)) {
+    element = "cold";
+  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Garlic`)) {
+    element = "stench";
+  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Wormwood`)) {
+    element = "spooky";
+  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Bacon Grease`)) {
+    element = "sleaze";
+  } else {
+    throw `Unrecognized skill ${skill}.`;
+  }
+
+  const damageMultipliers = {
+    physical: 0,
+    hot: 0,
+    cold: 0,
+    stench: 0,
+    spooky: 0,
+    sleaze: 0,
+  };
+  damageMultipliers[element] = 1;
+  if (skill === $skill`Weapon of the Pastalord`) {
+    damageMultipliers.physical = 1;
+  }
+
+  if (haveEquipped($item`Rain-Doh green lantern`)) {
+    damageMultipliers.stench += damageMultipliers[element];
+  }
+  if (haveEquipped($item`snow mobile`)) {
+    damageMultipliers.cold += damageMultipliers[element];
+  }
+  if (haveEquipped($item`meteorb`)) {
+    damageMultipliers.hot += damageMultipliers[element];
+  }
+  if (
+    haveEquipped($item`unwrapped knock-off retro superhero cape`) &&
     get("retroCapeSuperhero") === "heck" &&
     get("retroCapeWashingInstructions") === "kill"
-      ? 1
-      : 0) + (!hotDoubled && haveEquipped($item`meteorb`) ? 1 : 0);
+  ) {
+    damageMultipliers.spooky += damageMultipliers[element];
+  }
+  if (haveEquipped($item`porcelain porkpie`) && skill.class === $class`Pastamancer`) {
+    damageMultipliers.sleaze += damageMultipliers[element];
+  }
+
+  if (get("_crimbo21LabSnowing")) {
+    damageMultipliers.cold *= 1.5;
+  }
+
+  return sumNumbers(Object.values(damageMultipliers));
+}
+
+function predictedDamage(skill: Skill): number {
+  const multiplier =
+    skill === $skill`Saucegeyser`
+      ? 0.4
+      : skill === $skill`Weapon of the Pastalord` && !haveEquipped($item`aerogel apron`)
+      ? 0.25
+      : 0.5;
   const criticalMultiplier = () =>
     getModifier("Spell Critical Percent") >= 89
       ? haveEquipped($item`dark baconstone ring`)
@@ -98,9 +155,77 @@ function predictedDamage(skill: Skill): number {
     (1 + getModifier("Spell Damage Percent") / 100) *
     criticalMultiplier() *
     (1 - 0.004 * getModifier("Monster Level")) *
-    (hotDoubled ? 2 : 1) *
-    (1 + lanternCount)
+    lanternMultiplier(skill)
   );
+}
+
+function constructLabOutfit(spellDamageLevel: number, skill: Skill | undefined) {
+  const forceEquip = [];
+  const preventSlot = [];
+  const acc3 =
+    have($item`Space Trip safety headphones`) && spellDamageLevel >= 2
+      ? $item`Space Trip safety headphones`
+      : $item`cozy scarf`;
+  if (availableAmount($item`ert grey goo ring`) >= 2) {
+    // Equip two ert grey goo rings.
+    preventSlot.push(...$slots`acc1, acc2, acc3`);
+    equip($slot`acc1`, $item`ert grey goo ring`);
+    equip($slot`acc2`, $item`ert grey goo ring`);
+    equip($slot`acc3`, acc3);
+  }
+  if (have($item`unwrapped knock-off retro superhero cape`)) {
+    preventSlot.push($slot`back`);
+    if (get("retroCapeSuperhero") !== "heck" || get("retroCapeWashingInstructions") !== "kill") {
+      cliExecute("retrocape heck kill");
+    }
+  }
+
+  if (spellDamageLevel >= 1) {
+    // Meteorb is better for geyser, snow mobile for everything else.
+    const lantern1 = skill === $skill`Saucegeyser` ? $item`meteorb` : $item`snow mobile`;
+    if (!have(lantern1)) retrieveItem(lantern1);
+    forceEquip.push(lantern1);
+  }
+  if (spellDamageLevel >= 2) {
+    if (myFamiliar() === $familiar`Left-Hand Man`) {
+      if (have($item`HOA regulation book`)) {
+        forceEquip.push($item`HOA regulation book`);
+      } else {
+        // Pick the other lantern here.
+        const lantern2 = skill === $skill`Saucegeyser` ? $item`snow mobile` : $item`meteorb`;
+        if (!have(lantern2)) retrieveItem(lantern2);
+        forceEquip.push(lantern2);
+      }
+    }
+    if (skill === $skill`Saucegeyser` && have($item`gabardine garibaldi`)) {
+      forceEquip.push($item`gabardine garibaldi`);
+    } else if (skill && skill.class === $class`Pastamancer` && have($item`porcelain porkpie`)) {
+      forceEquip.push($item`porcelain porkpie`);
+    }
+    if (skill === $skill`Weapon of the Pastalord` && have($item`aerogel apron`)) {
+      forceEquip.push($item`aerogel apron`);
+    }
+  }
+
+  const offHandSlots = myFamiliar() === $familiar`Left-Hand Man` ? 2 : 1;
+  const offHandForce = forceEquip.filter((item) => toSlot(item) === $slot`off-hand`).length;
+  if (offHandForce < offHandSlots) {
+    forceEquip.push($item`goo magnet`);
+  }
+
+  return new Requirement([], { forceEquip, preventSlot });
+}
+
+function constructNonLabOutfit() {
+  const forceEquip = [];
+  if (have($item`Lil' Doctor™ bag`) && get("_chestXRayUsed") < 3) {
+    forceEquip.push($item`Lil' Doctor™ bag`);
+  }
+  // Force goo magnet for all but the last 30 turns.
+  if (have($item`goo magnet`) && options.stopTurnsSpent - currentTurnsSpent() >= 30) {
+    forceEquip.push($item`goo magnet`);
+  }
+  return new Requirement([], { forceEquip });
 }
 
 export function main(argString = ""): void {
@@ -194,17 +319,24 @@ export function main(argString = ""): void {
         retrieveItem($item`human musk`);
       }
 
+      const settingUpLabSnow =
+        have($familiar`Ghost of Crimbo Cheer`) && !get("_crimbo21LabSnowing", false);
+
       if ($locations`Site Alpha Quarry`.includes(options.location)) {
         useFamiliar(
           $familiars`Stocking Mimic, Ninja Pirate Zombie Robot`.find((fam) => have(fam)) ??
             $familiar`Cocoabo`
         );
       } else if (options.location === $location`Site Alpha Primary Lab`) {
-        useFamiliar(
-          $familiars`Left-Hand Man, Stocking Mimic, Ninja Pirate Zombie Robot`.find((fam) =>
-            have(fam)
-          ) ?? $familiar`Cocoabo`
-        );
+        if (settingUpLabSnow) {
+          useFamiliar($familiar`Ghost of Crimbo Cheer`);
+        } else {
+          useFamiliar(
+            $familiars`Left-Hand Man, Stocking Mimic, Ninja Pirate Zombie Robot`.find((fam) =>
+              have(fam)
+            ) ?? $familiar`Cocoabo`
+          );
+        }
       } else {
         useFamiliar(
           $familiars`Jumpsuited Hound Dog, Cat Burglar`.find((fam) => have(fam)) ??
@@ -222,63 +354,17 @@ export function main(argString = ""): void {
 
       let skill: Skill | undefined = undefined;
       if (options.location === $location`Site Alpha Primary Lab`) {
-        skill = $skills`Saucegeyser`
-          .filter((skill) => have(skill))
-          .sort((x, y) => mpCost(x) - mpCost(y))[0];
-        if (skill === undefined) throw "Need Saucegeyser for Lab.";
+        skill = $skills`Fearful Fettucini, Saucegeyser, Weapon of the Pastalord`.filter((skill) =>
+          have(skill)
+        )[0];
+        if (skill === undefined) throw "Need Saucegeyser or Fearful Fettucini for Lab.";
       }
 
       const coldResTarget = Math.floor((15 + todayTurnsSpentForColdRes()) / 3);
       let madeProgress;
+      let labSnowFreeRun: FreeRun | undefined = undefined;
       do {
-        const forceEquip = [];
-        const preventSlot = [];
-        if (options.location === $location`Site Alpha Primary Lab`) {
-          const acc3 =
-            have($item`Space Trip safety headphones`) && spellDamageLevel >= 2
-              ? $item`Space Trip safety headphones`
-              : $item`cozy scarf`;
-          if (availableAmount($item`ert grey goo ring`) >= 2) {
-            // Equip two ert grey goo rings.
-            preventSlot.push(...$slots`acc1, acc2, acc3`);
-            equip($slot`acc1`, $item`ert grey goo ring`);
-            equip($slot`acc2`, $item`ert grey goo ring`);
-            equip($slot`acc3`, acc3);
-          }
-          if (have($item`unwrapped knock-off retro superhero cape`)) {
-            preventSlot.push($slot`back`);
-            if (
-              get("retroCapeSuperhero") !== "heck" ||
-              get("retroCapeWashingInstructions") !== "kill"
-            ) {
-              cliExecute("retrocape heck kill");
-            }
-          }
-          if (spellDamageLevel >= 1) {
-            if (!have($item`meteorb`)) retrieveItem($item`meteorb`);
-            forceEquip.push($item`meteorb`);
-          }
-          if (spellDamageLevel >= 2 && myFamiliar() === $familiar`Left-Hand Man`) {
-            if (!have($item`snow machine`)) retrieveItem($item`snow machine`);
-            forceEquip.push($item`snow mobile`);
-          }
-
-          const offHandSlots = myFamiliar() === $familiar`Left-Hand Man` ? 2 : 1;
-          const offHandForce = forceEquip.filter((item) => toSlot(item) === $slot`off-hand`).length;
-          if (offHandForce < offHandSlots) {
-            forceEquip.push($item`goo magnet`);
-          }
-        } else {
-          if (have($item`Lil' Doctor™ bag`) && get("_chestXRayUsed") < 3) {
-            forceEquip.push($item`Lil' Doctor™ bag`);
-          }
-          // Force goo magnet for all but the last 30 turns.
-          if (have($item`goo magnet`) && options.stopTurnsSpent - currentTurnsSpent() >= 30) {
-            forceEquip.push($item`goo magnet`);
-          }
-        }
-
-        new Requirement(
+        let requirement = new Requirement(
           [
             ...(itemDropWeight > 0 ? [`${itemDropWeight} Item Drop`] : []),
             `${(5 * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
@@ -287,17 +373,38 @@ export function main(argString = ""): void {
               : []),
           ],
           {
-            forceEquip,
             preventEquip: $items`broken champagne bottle`,
-            preventSlot,
             bonusEquip: new Map([[$item`bag of many confections`, 1000]]),
           }
-        ).maximize();
+        );
+
+        if (options.location === $location`Site Alpha Primary Lab`) {
+          if (have($familiar`Ghost of Crimbo Cheer`) && !get("_crimbo21LabSnowing")) {
+            // Find us a non-familiar free run.
+            const freeRun = ensureFreeRun(false);
+            if (freeRun.available()) {
+              freeRun.options?.preparation?.();
+              if (freeRun.options?.equipmentRequirements) {
+                requirement = requirement.merge(freeRun.options.equipmentRequirements());
+              }
+              labSnowFreeRun = freeRun;
+            } else {
+              throw `Tried to use free run ${freeRun.name}, but it's not available.`;
+            }
+          } else {
+            requirement = requirement.merge(constructLabOutfit(spellDamageLevel, skill));
+          }
+        } else {
+          requirement = requirement.merge(constructNonLabOutfit());
+        }
+
+        requirement.maximize();
 
         madeProgress = false;
 
         if (
           options.location === $location`Site Alpha Primary Lab` &&
+          !settingUpLabSnow &&
           skill &&
           predictedDamage(skill) < expectedHp(weight) &&
           spellDamageLevel < 2
@@ -305,7 +412,9 @@ export function main(argString = ""): void {
           madeProgress = true;
           spellDamageLevel++;
           print(
-            `Failed to get enough spell damage. Moving to spell damage level ${spellDamageLevel}.`,
+            `Failed to get enough spell damage (${predictedDamage(skill).toFixed(0)} < ${expectedHp(
+              weight
+            ).toFixed(0)}). Moving to spell damage level ${spellDamageLevel}.`,
             "blue"
           );
         }
@@ -338,29 +447,31 @@ export function main(argString = ""): void {
       );
 
       if (options.location === $location`Site Alpha Primary Lab` && skill) {
-        print(
-          `Predicting ${predictedDamage(skill).toFixed(0)} damage against ${expectedHp(
-            weight
-          ).toFixed(0)} HP.`,
-          "blue"
-        );
-
-        if (predictedDamage(skill) < expectedHp(weight)) {
-          const factorNeeded = expectedHp(weight) / predictedDamage(skill);
-          print(`Not enough. Need to multiply by ${factorNeeded.toFixed(2)}.`);
-          const mysticalityMultiplier = 1 + getModifier("Mysticality Percent") / 100;
-          const mysticalityPercentTarget = 100 * Math.sqrt(factorNeeded) * mysticalityMultiplier;
-          const spellDamageMultiplier = 1 + getModifier("Spell Damage Percent") / 100;
-          const spellDamagePercentTarget = 100 * Math.sqrt(factorNeeded) * spellDamageMultiplier;
+        if (!settingUpLabSnow) {
           print(
-            `Targeting ${mysticalityPercentTarget.toFixed(
-              0
-            )}% myst and ${spellDamagePercentTarget}% SD.`
+            `Predicting ${predictedDamage(skill).toFixed(0)} damage against ${expectedHp(
+              weight
+            ).toFixed(0)} HP.`,
+            "blue"
           );
-          boost("Mysticality Percent", mysticalityPercentTarget, 10);
-          boost("Spell Damage Percent", spellDamagePercentTarget, 10);
+
           if (predictedDamage(skill) < expectedHp(weight)) {
-            throw "Somehow our goos got too big - use stench jelly to scale them back down.";
+            const factorNeeded = expectedHp(weight) / predictedDamage(skill);
+            print(`Not enough. Need to multiply by ${factorNeeded.toFixed(2)}.`);
+            const mysticalityMultiplier = 1 + getModifier("Mysticality Percent") / 100;
+            const mysticalityPercentTarget = 100 * Math.sqrt(factorNeeded) * mysticalityMultiplier;
+            const spellDamageMultiplier = 1 + getModifier("Spell Damage Percent") / 100;
+            const spellDamagePercentTarget = 100 * Math.sqrt(factorNeeded) * spellDamageMultiplier;
+            print(
+              `Targeting ${mysticalityPercentTarget.toFixed(
+                0
+              )}% myst and ${spellDamagePercentTarget}% SD.`
+            );
+            boost("Mysticality Percent", mysticalityPercentTarget, 10);
+            boost("Spell Damage Percent", spellDamagePercentTarget, 10);
+            if (predictedDamage(skill) < expectedHp(weight)) {
+              throw "Somehow our goos got too big - use stench jelly to scale them back down.";
+            }
           }
         }
 
@@ -380,7 +491,8 @@ export function main(argString = ""): void {
         }
       }
 
-      Macro.if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
+      Macro.externalIf(settingUpLabSnow, labSnowFreeRun?.macro ?? new Macro())
+        .if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
         .if_($monster`gooified flower`, Macro.item($item`human musk`))
         .externalIf(
           options.location !== $location`Site Alpha Primary Lab` &&
@@ -422,6 +534,7 @@ export function main(argString = ""): void {
       const encounterMatch = get("lastEncounter").match(/^(\d+)-ton grey goo/);
       if (encounterMatch) {
         set("crimbo21GooWeight", parseInt(encounterMatch[1]));
+        if (settingUpLabSnow) set("_crimbo21LabSnowing", true);
       }
 
       if (

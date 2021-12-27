@@ -97,19 +97,21 @@ function voterSetup(): void {
 }
 
 export function dailies(): void {
-  if (
-    !$locations`Site Alpha Quarry, Site Alpha Primary Lab`.includes(options.location) &&
-    have($familiar`Mu`) &&
-    !have($item`luck incense`)
-  ) {
-    useFamiliar($familiar`Mu`);
-    use($item`box of Familiar Jacks`);
+  if (!$locations`Site Alpha Quarry, Site Alpha Primary Lab`.includes(options.location)) {
+    if (have($familiar`Mu`) && !have($item`luck incense`)) {
+      useFamiliar($familiar`Mu`);
+      use($item`box of Familiar Jacks`);
+    }
+    if (
+      myClass() === $class`Pastamancer` &&
+      myThrall() !== $thrall`Spice Ghost` &&
+      have($skill`Bind Spice Ghost`)
+    ) {
+      useSkill($skill`Bind Spice Ghost`);
+    }
   }
   if (SongBoom.have()) SongBoom.setSong("Food Vibrations");
   if (get("horseryAvailable") && get("_horsery") !== "pale horse") cliExecute("horsery pale");
-  if (myClass() === $class`Pastamancer` && myThrall() !== $thrall`Spice Ghost`) {
-    useSkill($skill`Bind Spice Ghost`);
-  }
   retrieveItem($item`seal tooth`);
   if (
     have($item`Kremlin's Greatest Briefcase`) &&
@@ -117,6 +119,7 @@ export function dailies(): void {
   ) {
     cliExecute("briefcase enchantment cold");
   }
+  if (have($skill`Spirit of Peppermint`)) useSkill($skill`Spirit of Peppermint`);
 
   // eslint-disable-next-line libram/verify-constants
   if (options.location === $location`Site Alpha Primary Lab`) {
