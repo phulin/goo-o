@@ -94,6 +94,11 @@ const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolea
       () => 5,
       () => have($item`defective Game Grid token`) && !get("_defectiveTokenUsed"),
     ],
+    [
+      $effect`Rainbow Vaccine`,
+      () => 30,
+      () => get("spacegateAlways") && get("spacegateVaccine1") && !get("_spacegateVaccine"),
+    ],
   ],
 };
 
