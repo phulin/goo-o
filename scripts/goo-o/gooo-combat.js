@@ -4104,13 +4104,6 @@ function currentTurnsSpentForColdRes() {
 }
 function startingTurnsSpent() {
   var result = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
-
-  if (Math.floor((currentTurnsSpentForColdRes() - result + 15) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
-    var oldResult = result;
-    result = currentTurnsSpentForColdRes() - ((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0) * 3 - 15);
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Inconsistent stored turns spent ".concat(oldResult, ". Adjusting down to ").concat(result, "."), "red");
-  }
-
   (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
   return result;
 }
@@ -4131,7 +4124,17 @@ function incrementTurnsSpentAdjustment() {
   set("_crimbo21TurnsSpentAdjustment", current + 1);
 }
 function turnsSpentAdjustment() {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
+  var result = get("_crimbo21TurnsSpentAdjustment", 0);
+
+  if (Math.floor((todayTurnsSpent() + result + 15) / 3) < get("_crimbo21ColdResistance", 0)) {
+    // Ground truth is the game's cold res requirement, so adjust if we're off.
+    var oldResult = result;
+    result = 3 * get("_crimbo21ColdResistance", 0) - 15 - todayTurnsSpent();
+    print("Inconsistent stored turns spent adjustment ".concat(oldResult, ". Adjusting to ").concat(result, "."), "red");
+  }
+
+  set("_crimbo21TurnsSpentAdjustment", result);
+  return result;
 }
 
 /***/ }),

@@ -6,9 +6,10 @@
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "LE": () => (/* binding */ Macro)
+/* harmony export */   "LE": () => (/* binding */ Macro),
+/* harmony export */   "Ao": () => (/* binding */ adventureMacroAuto)
 /* harmony export */ });
-/* unused harmony exports getMacroId, InvalidMacroError, adventureMacro, adventureMacroAuto, StrictMacro */
+/* unused harmony exports getMacroId, InvalidMacroError, adventureMacro, StrictMacro */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _template_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(678);
@@ -734,13 +735,13 @@ function adventureMacroAuto(loc, autoMacro) {
   nextMacro.save();
 
   try {
-    adv1(loc, 0, "");
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.adv1)(loc, 0, "");
 
-    while (inMultiFight()) {
-      runCombat();
+    while ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.inMultiFight)()) {
+      (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.runCombat)();
     }
 
-    if (choiceFollowsFight()) visitUrl("choice.php");
+    if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.choiceFollowsFight)()) (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("choice.php");
   } finally {
     Macro.clearSaved();
   }
@@ -6617,7 +6618,7 @@ var highDamageSkills = (0,template_string/* $skills */.nx)(src_templateObject2 |
 
 function expectedHp(weight) {
   // This is the maximum possible HP we'd expect.
-  return 1.1 * (3 * Math.pow(weight - (weight > 40 ? 8 : 10), 3) + 100);
+  return 1.1 * (3 * Math.pow(weight - (weight > 50 ? 6 : weight > 40 ? 8 : 10), 3) + 100);
 }
 
 function lanternMultiplier(skill) {
@@ -6805,7 +6806,7 @@ function chooseCombatSkill() {
 
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(26043);
+  sinceKolmafiaRevision(26073);
   var args = argString.split(/\s+/g);
   var maxWeight = Infinity;
 
@@ -6992,7 +6993,7 @@ function main() {
           }
         }
 
-        if (weight < maxWeight && (predictedDamage(skill) >= expectedHp(weight + 1) || Number.isFinite(maxWeight))) {
+        if (weight < maxWeight && weight < 58 && (predictedDamage(skill) >= expectedHp(weight + 1) || Number.isFinite(maxWeight))) {
           // Increase if we already have enough damage, or the user set a max weight and we're below it.
           // Turn the knob to the right (more ML).
           (0,property/* set */.t8)("choiceAdventure1461", 1);
@@ -7005,7 +7006,7 @@ function main() {
         }
       }
 
-      src_combat.Macro.externalIf(settingUpLabSnow, (_labSnowFreeRun$macro = (_labSnowFreeRun = labSnowFreeRun) === null || _labSnowFreeRun === void 0 ? void 0 : _labSnowFreeRun.macro) !== null && _labSnowFreeRun$macro !== void 0 ? _labSnowFreeRun$macro : new src_combat.Macro()).if_((0,template_string/* $monster */.O4)(_templateObject101 || (_templateObject101 = src_taggedTemplateLiteral(["gooified elf-thing"]))), src_combat.Macro.item((0,template_string/* $item */.xr)(_templateObject102 || (_templateObject102 = src_taggedTemplateLiteral(["human musk"]))))).if_((0,template_string/* $monster */.O4)(_templateObject103 || (_templateObject103 = src_taggedTemplateLiteral(["gooified flower"]))), src_combat.Macro.item((0,template_string/* $item */.xr)(_templateObject104 || (_templateObject104 = src_taggedTemplateLiteral(["human musk"]))))).externalIf(options/* default.location */.Z.location !== (0,template_string/* $location */.PG)(_templateObject105 || (_templateObject105 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) && stasisFamiliars.includes((0,external_kolmafia_.myFamiliar)()), src_combat.Macro.while_("!pastround 10 && !hpbelow 250", src_combat.Macro.item((0,template_string/* $item */.xr)(_templateObject106 || (_templateObject106 = src_taggedTemplateLiteral(["seal tooth"])))))).kill(skill).setAutoAttack();
+      var macro = src_combat.Macro.externalIf(settingUpLabSnow, (_labSnowFreeRun$macro = (_labSnowFreeRun = labSnowFreeRun) === null || _labSnowFreeRun === void 0 ? void 0 : _labSnowFreeRun.macro) !== null && _labSnowFreeRun$macro !== void 0 ? _labSnowFreeRun$macro : new src_combat.Macro()).if_((0,template_string/* $monster */.O4)(_templateObject101 || (_templateObject101 = src_taggedTemplateLiteral(["gooified elf-thing"]))), src_combat.Macro.item((0,template_string/* $item */.xr)(_templateObject102 || (_templateObject102 = src_taggedTemplateLiteral(["human musk"]))))).if_((0,template_string/* $monster */.O4)(_templateObject103 || (_templateObject103 = src_taggedTemplateLiteral(["gooified flower"]))), src_combat.Macro.item((0,template_string/* $item */.xr)(_templateObject104 || (_templateObject104 = src_taggedTemplateLiteral(["human musk"]))))).externalIf(options/* default.location */.Z.location !== (0,template_string/* $location */.PG)(_templateObject105 || (_templateObject105 = src_taggedTemplateLiteral(["Site Alpha Primary Lab"]))) && stasisFamiliars.includes((0,external_kolmafia_.myFamiliar)()), src_combat.Macro.while_("!pastround 10 && !hpbelow 250", src_combat.Macro.item((0,template_string/* $item */.xr)(_templateObject106 || (_templateObject106 = src_taggedTemplateLiteral(["seal tooth"])))))).kill(skill);
 
       if ((0,external_kolmafia_.myMp)() < 200) {
         if ((0,property/* get */.U2)("_sausagesEaten") < 23 && ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject107 || (_templateObject107 = src_taggedTemplateLiteral(["magical sausage"])))) || (0,lib/* have */.lf)((0,template_string/* $item */.xr)(_templateObject108 || (_templateObject108 = src_taggedTemplateLiteral(["magical sausage casing"])))))) {
@@ -7019,23 +7020,20 @@ function main() {
         (0,external_kolmafia_.restoreHp)(0.95 * (0,external_kolmafia_.myMaxhp)());
       }
 
-      var result = (0,external_kolmafia_.visitUrl)((0,external_kolmafia_.toUrl)(options/* default.location */.Z.location));
-
-      while ((0,external_kolmafia_.inMultiFight)()) {
-        (0,external_kolmafia_.runCombat)();
-      }
-
-      if ((0,external_kolmafia_.choiceFollowsFight)()) (0,external_kolmafia_.visitUrl)("choice.php");
-
-      if ((0,external_kolmafia_.handlingChoice)()) {
-        (0,external_kolmafia_.runChoice)(-1);
-      }
-
-      var match = result.match(/(\d+) Cold Resistance Required/);
+      var achievedColdRes = modifier_get("Cold Resistance");
+      var lastColdRes = (0,property/* get */.U2)("_crimbo21ColdResistance", 0);
+      (0,combat/* adventureMacroAuto */.Ao)(options/* default.location */.Z.location, macro);
+      var match = (0,property/* get */.U2)("lastEncounter").match(/(\d+) Cold Resistance Required/);
 
       if (match) {
         (0,property/* set */.t8)("_crimbo21ColdResistance", parseInt(match[1]));
-        throw "Couldn't get enough cold resistance (".concat(parseInt(match[1]), ") to continue.");
+      }
+
+      var currentColdRes = (0,property/* get */.U2)("_crimbo21ColdResistance", 0);
+
+      if (currentColdRes > lastColdRes) {
+        // Make sure adjustment is updated.
+        (0,src_lib/* todayTurnsSpentForColdRes */.GY)();
       }
 
       var encounterMatch = (0,property/* get */.U2)("lastEncounter").match(/^(\d+)-ton grey goo/);
@@ -7043,6 +7041,10 @@ function main() {
       if (encounterMatch) {
         (0,property/* set */.t8)("crimbo21GooWeight", parseInt(encounterMatch[1]));
         if (settingUpLabSnow) (0,property/* set */.t8)("_crimbo21LabSnowing", true);
+      }
+
+      if (achievedColdRes < currentColdRes) {
+        throw "Couldn't get enough cold resistance (".concat(achievedColdRes, " < ").concat(currentColdRes, ") to continue.");
       }
 
       if (["", "Hello Knob My Old Friend"].includes((0,property/* get */.U2)("lastEncounter").trim()) && (0,external_kolmafia_.lastChoice)() === 1461) {
@@ -7105,13 +7107,6 @@ function currentTurnsSpentForColdRes() {
 }
 function startingTurnsSpent() {
   var result = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
-
-  if (Math.floor((currentTurnsSpentForColdRes() - result + 15) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
-    var oldResult = result;
-    result = currentTurnsSpentForColdRes() - ((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0) * 3 - 15);
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Inconsistent stored turns spent ".concat(oldResult, ". Adjusting down to ").concat(result, "."), "red");
-  }
-
   (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
   return result;
 }
@@ -7132,7 +7127,17 @@ function incrementTurnsSpentAdjustment() {
   (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21TurnsSpentAdjustment", current + 1);
 }
 function turnsSpentAdjustment() {
-  return (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
+  var result = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
+
+  if (Math.floor((todayTurnsSpent() + result + 15) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
+    // Ground truth is the game's cold res requirement, so adjust if we're off.
+    var oldResult = result;
+    result = 3 * (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0) - 15 - todayTurnsSpent();
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Inconsistent stored turns spent adjustment ".concat(oldResult, ". Adjusting to ").concat(result, "."), "red");
+  }
+
+  (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21TurnsSpentAdjustment", result);
+  return result;
 }
 
 /***/ }),
