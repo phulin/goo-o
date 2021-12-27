@@ -1,12 +1,9 @@
 import {
   availableAmount,
-  choiceFollowsFight,
   cliExecute,
   eat,
   equip,
-  handlingChoice,
   haveEquipped,
-  inMultiFight,
   lastChoice,
   myAdventures,
   myBuffedstat,
@@ -18,13 +15,9 @@ import {
   restoreHp,
   restoreMp,
   retrieveItem,
-  runChoice,
-  runCombat,
   setAutoAttack,
   toSlot,
-  toUrl,
   useFamiliar,
-  visitUrl,
 } from "kolmafia";
 import {
   $class,
@@ -41,6 +34,7 @@ import {
   $slot,
   $slots,
   $stat,
+  adventureMacroAuto,
   clamp,
   ensureFreeRun,
   FreeRun,
@@ -74,7 +68,7 @@ const highDamageSkills = $skills`Fearful Fettucini, Saucegeyser, Weapon of the P
 
 function expectedHp(weight: number): number {
   // This is the maximum possible HP we'd expect.
-  return 1.1 * (3 * (weight - (weight > 40 ? 8 : 10)) ** 3 + 100);
+  return 1.1 * (3 * (weight - (weight > 50 ? 6 : weight > 40 ? 8 : 10)) ** 3 + 100);
 }
 
 function lanternMultiplier(skill: Skill) {
@@ -257,7 +251,7 @@ function chooseCombatSkill() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26043);
+  sinceKolmafiaRevision(26073);
 
   const args = argString.split(/\s+/g);
   let maxWeight = Infinity;
@@ -499,6 +493,7 @@ export function main(argString = ""): void {
 
         if (
           weight < maxWeight &&
+          weight < 58 &&
           (predictedDamage(skill) >= expectedHp(weight + 1) || Number.isFinite(maxWeight))
         ) {
           // Increase if we already have enough damage, or the user set a max weight and we're below it.
@@ -513,7 +508,7 @@ export function main(argString = ""): void {
         }
       }
 
-      Macro.externalIf(settingUpLabSnow, labSnowFreeRun?.macro ?? new Macro())
+      const macro = Macro.externalIf(settingUpLabSnow, labSnowFreeRun?.macro ?? new Macro())
         .if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
         .if_($monster`gooified flower`, Macro.item($item`human musk`))
         .externalIf(
@@ -521,8 +516,7 @@ export function main(argString = ""): void {
             stasisFamiliars.includes(myFamiliar()),
           Macro.while_("!pastround 10 && !hpbelow 250", Macro.item($item`seal tooth`))
         )
-        .kill(skill)
-        .setAutoAttack();
+        .kill(skill);
 
       if (myMp() < 200) {
         if (
@@ -539,24 +533,30 @@ export function main(argString = ""): void {
         restoreHp(0.95 * myMaxhp());
       }
 
-      const result = visitUrl(toUrl(options.location));
+      const achievedColdRes = getModifier("Cold Resistance");
+      const lastColdRes = get("_crimbo21ColdResistance", 0);
 
-      while (inMultiFight()) runCombat();
-      if (choiceFollowsFight()) visitUrl("choice.php");
-      if (handlingChoice()) {
-        runChoice(-1);
-      }
+      adventureMacroAuto(options.location, macro);
 
-      const match = result.match(/(\d+) Cold Resistance Required/);
+      const match = get("lastEncounter").match(/(\d+) Cold Resistance Required/);
       if (match) {
         set("_crimbo21ColdResistance", parseInt(match[1]));
-        throw `Couldn't get enough cold resistance (${parseInt(match[1])}) to continue.`;
+      }
+
+      const currentColdRes = get("_crimbo21ColdResistance", 0);
+      if (currentColdRes > lastColdRes) {
+        // Make sure adjustment is updated.
+        todayTurnsSpentForColdRes();
       }
 
       const encounterMatch = get("lastEncounter").match(/^(\d+)-ton grey goo/);
       if (encounterMatch) {
         set("crimbo21GooWeight", parseInt(encounterMatch[1]));
         if (settingUpLabSnow) set("_crimbo21LabSnowing", true);
+      }
+
+      if (achievedColdRes < currentColdRes) {
+        throw `Couldn't get enough cold resistance (${achievedColdRes} < ${currentColdRes}) to continue.`;
       }
 
       if (

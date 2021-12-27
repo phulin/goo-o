@@ -15,15 +15,7 @@ export function currentTurnsSpentForColdRes(): number {
 }
 
 export function startingTurnsSpent(): number {
-  let result = get("_crimbo21StartingTurnsSpent", currentTurnsSpent());
-  if (
-    Math.floor((currentTurnsSpentForColdRes() - result + 15) / 3) <
-    get("_crimbo21ColdResistance", 0)
-  ) {
-    const oldResult = result;
-    result = currentTurnsSpentForColdRes() - (get("_crimbo21ColdResistance", 0) * 3 - 15);
-    print(`Inconsistent stored turns spent ${oldResult}. Adjusting down to ${result}.`, "red");
-  }
+  const result = get("_crimbo21StartingTurnsSpent", currentTurnsSpent());
   set("_crimbo21StartingTurnsSpent", result);
   return result;
 }
@@ -50,5 +42,16 @@ export function incrementTurnsSpentAdjustment(): void {
 }
 
 export function turnsSpentAdjustment(): number {
-  return get("_crimbo21TurnsSpentAdjustment", 0);
+  let result = get("_crimbo21TurnsSpentAdjustment", 0);
+  if (Math.floor((todayTurnsSpent() + result + 15) / 3) < get("_crimbo21ColdResistance", 0)) {
+    // Ground truth is the game's cold res requirement, so adjust if we're off.
+    const oldResult = result;
+    result = 3 * get("_crimbo21ColdResistance", 0) - 15 - todayTurnsSpent();
+    print(
+      `Inconsistent stored turns spent adjustment ${oldResult}. Adjusting to ${result}.`,
+      "red"
+    );
+  }
+  set("_crimbo21TurnsSpentAdjustment", result);
+  return result;
 }
