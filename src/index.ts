@@ -212,8 +212,7 @@ function constructLabOutfit(spellDamageLevel: number, skill: Skill | undefined) 
     }
     if (skill === $skill`Weapon of the Pastalord` && have($item`aerogel apron`)) {
       forceEquip.push($item`aerogel apron`);
-    }
-    if (skill === $skill`Fearful Fettucini` && have($item`velour veil`)) {
+    } else if (skill === $skill`Fearful Fettucini` && have($item`velour veil`)) {
       forceEquip.push($item`velour veil`);
     }
   }
