@@ -138,7 +138,7 @@ function lanternMultiplier(skill: Skill) {
 }
 
 function predictedDamage(skill: Skill): number {
-  const multiplier = (() => {
+  const multiplier = () => {
     switch (skill) {
       case $skill`Saucegeyser`:
         return 0.4;
@@ -149,19 +149,19 @@ function predictedDamage(skill: Skill): number {
       default:
         return 0;
     }
-  })();
-  const criticalMultiplier = (() =>
+  };
+  const criticalMultiplier = () =>
     getModifier("Spell Critical Percent") >= 89
       ? haveEquipped($item`dark baconstone ring`)
         ? 3
         : 2
-      : 1)();
+      : 1;
 
   return (
-    multiplier *
+    multiplier() *
     myBuffedstat($stat`Mysticality`) *
     (1 + getModifier("Spell Damage Percent") / 100) *
-    criticalMultiplier *
+    criticalMultiplier() *
     (1 - 0.004 * getModifier("Monster Level")) *
     lanternMultiplier(skill)
   );
@@ -237,6 +237,24 @@ function constructNonLabOutfit() {
     forceEquip.push($item`goo magnet`);
   }
   return new Requirement([], { forceEquip });
+}
+
+function chooseCombatSkill() {
+  if (options.location !== $location`Site Alpha Primary Lab`) return undefined;
+
+  if (have($item`velour veil`) && have($skill`Fearful Fettucini`)) {
+    return $skill`Fearful Fettucini`;
+  }
+
+  const available = highDamageSkills.filter((skill) => have(skill))[0];
+
+  if (available === undefined) {
+    throw `Need ${highDamageSkills.slice(0, -1).join(", ")} or ${
+      highDamageSkills.slice(-1)[0]
+    } for Lab.`;
+  }
+
+  return available;
 }
 
 export function main(argString = ""): void {
@@ -362,28 +380,12 @@ export function main(argString = ""): void {
         : 1;
 
       const weight = get("crimbo21GooWeight", 10);
-
-      const skill = (() => {
-        if (options.location !== $location`Site Alpha Primary Lab`) return undefined;
-
-        if (have($item`velour veil`) && have($skill`Fearful Fettucini`)) {
-          return $skill`Fearful Fettucini`;
-        }
-
-        const available = highDamageSkills.filter((skill) => have(skill))[0];
-
-        if (available === undefined) {
-          throw `Need ${highDamageSkills.slice(0, -1).join(", ")} or ${
-            highDamageSkills.slice(-1)[0]
-          } for Lab.`;
-        }
-
-        return available;
-      })();
-
+      const skill = chooseCombatSkill();
       const coldResTarget = Math.floor((15 + todayTurnsSpentForColdRes()) / 3);
+
       let madeProgress;
       let labSnowFreeRun: FreeRun | undefined = undefined;
+
       do {
         let requirement = new Requirement(
           [
