@@ -61,6 +61,7 @@ import {
 } from "./lib";
 import { mood } from "./mood";
 import options from "./options";
+import { fillUpOnPizza } from "./pizza";
 import { propertyManager } from "./properties";
 
 const stasisFamiliars = $familiars`Stocking Mimic, Ninja Pirate Zombie Robot, Cocoabo`;
@@ -257,7 +258,10 @@ export function main(argString = ""): void {
   let maxWeight = Infinity;
   for (const arg of args) {
     const maxMatch = arg.match(/^max=(\d+)$/);
-    if (arg === "dorm") {
+    if (arg === "pizza") {
+      fillUpOnPizza();
+      return;
+    } else if (arg === "dorm") {
       options.location = $location`Site Alpha Dormitory`;
     } else if (arg === "greenhouse") {
       options.location = $location`Site Alpha Greenhouse`;
