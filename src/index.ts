@@ -210,19 +210,22 @@ function constructLabOutfit(
 
   const rings = availableAmount($item`ert grey goo ring`);
 
+  let accessorySlots = 3;
   // Equip two ert grey goo rings.
   if (rings >= 1 && coldResWeightMultiplier < 32) {
     preventSlot.push($slots`acc1`);
     equip($slot`acc1`, $item`ert grey goo ring`);
+    accessorySlots--;
   }
 
   if (rings >= 2 && coldResWeightMultiplier < 16) {
     preventSlot.push($slots`acc2`);
     equip($slot`acc2`, $item`ert grey goo ring`);
+    accessorySlots--;
   }
 
   const accessoryForce = forceEquip.filter((item) => toSlot(item) === $slot`acc1`).length;
-  if (accessoryForce === 0) {
+  if (accessoryForce < accessorySlots) {
     const acc3 =
       have($item`Space Trip safety headphones`) && spellDamageLevel >= 2
         ? $item`Space Trip safety headphones`
