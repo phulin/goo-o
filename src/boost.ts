@@ -24,7 +24,7 @@ const modifierCandidatePotions = {
     ...$items`green candy heart, Gene Tonic: Fish, Daily Affirmation: Work For Hours a Week`,
   ],
   "Cold Resistance": [
-    ...$items`patch of extra-warm fur`,
+    ...$items`patch of extra-warm fur, murderbot shield unit`,
     ...$items`patent preventative tonic, Ancient Protector Soda, Tapioc berry, cold powder`,
     ...$items`recording of Rolando's Rondo of Resisto, rainbow glitter candle, can of black paint`,
     ...$items`lotion of hotness, lotion of spookiness, cyan seashell`,
@@ -37,13 +37,13 @@ const modifierCandidatePotions = {
     ...$items`potion of temporary gr8ness, boiling hot cocoa, miniature power pill`,
     ...$items`Mer-kin smartjuice, funky dried mushroom, Hawking's Elixir of Brilliance`,
     ...$items`tomato juice of powerful power, glittery mascara, jug of baconstone juice`,
-    ...$items`ointment of the occult, votive of confidence, sparkler`,
+    ...$items`ointment of the occult, votive of confidence`,
   ],
   "Spell Damage Percent": [
     ...$items`battery (AAA), pixel star, Gene Tonic: Elf, fudge-shaped hole in space-time`,
     ...$items`37x37x37 puzzle cube, Yeg's Motel hand soap, Daily Affirmation: Be a Mind Master`,
     ...$items`LOV Elixir #6, cordial of concentration, black eye shadow, demonic cow's blood`,
-    ...$items`tobiko marble soda, concentrated cordial of concentration`,
+    ...$items`tobiko marble soda, concentrated cordial of concentration, corrupted marrow`,
     ...$items`wind-up meatcar`,
   ],
 };
@@ -99,6 +99,19 @@ const modifierDailyBuffs: { [index: string]: [Effect, () => number, () => boolea
       () => 30,
       () => get("spacegateAlways") && get("spacegateVaccine1") && !get("_spacegateVaccine"),
     ],
+  ],
+  "Mysticality Percent": [
+    [$effect`Uncucumbered`, () => 200, () => get("daycareOpen") && !get("_daycareSpa")],
+    [
+      $effect`We're All Made of Starfish`,
+      () => 50,
+      () =>
+        have($item`Beach Comb`) &&
+        get("beachHeadsUnlocked").toString().split(",").includes("7") &&
+        !get("_beachHeadsUsed").toString().split(",").includes("7") &&
+        get("_freeBeachWalksUsed") < 11,
+    ],
+    [$effect`Trivia Master`, () => Infinity, () => true],
   ],
 };
 
@@ -156,7 +169,7 @@ export function boost(
   for (const [effect, turnsAvailable, available] of dailyBuffs) {
     if (getModifier(modifier) >= target) break;
     // Only activate cold buffs when they'll cover our remaining time here.
-    if (modifier === "Cold Resistance" && turnsAvailable() < remainingTurns()) continue;
+    if (modifier !== "Item Drop" && turnsAvailable() < remainingTurns()) continue;
     while (available() && turnsAvailable() > 0 && haveEffect(effect) < remainingTurns()) {
       cliExecute(effect.default);
       if (mySpleenUse() >= 3 - get("currentMojoFilters")) {

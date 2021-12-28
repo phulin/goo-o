@@ -71,7 +71,7 @@ const highDamageSkills = $skills`Fearful Fettucini, Saucegeyser, Weapon of the P
 
 function expectedHp(weight: number): number {
   // This is the maximum possible HP we'd expect.
-  return 1.1 * (0.05 * (weight - 5) ** 4 + 100);
+  return 1.1 * ((weight - 5) ** 4 / 18 + 100);
 }
 
 function lanternMultiplier(skill: Skill) {
@@ -423,7 +423,6 @@ export function main(argString = ""): void {
         requirement.maximize();
 
         madeProgress = false;
-        print(`madeProgress: ${madeProgress}`);
 
         if (
           options.location === $location`Site Alpha Primary Lab` &&
@@ -456,7 +455,6 @@ export function main(argString = ""): void {
 
       print();
       print(`==== Turn ${todayTurnsSpent()} out of ${totalTurnsToday()}. ====`, "blue");
-      print("Boosting Cold Res (and possibly Item Drop).", "blue");
       boost("Cold Resistance", coldResTarget - entauntaunedColdRes(), 500);
       if ($locations`Site Alpha Dormitory, Site Alpha Greenhouse`.includes(options.location)) {
         boost("Item Drop", options.location === $location`Site Alpha Greenhouse` ? 900 : 300, 50);
@@ -477,13 +475,15 @@ export function main(argString = ""): void {
             const factorNeeded = expectedHp(weight) / predictedDamage(skill);
             print(`Not enough. Need to multiply by ${factorNeeded.toFixed(2)}.`);
             const mysticalityMultiplier = 1 + getModifier("Mysticality Percent") / 100;
-            const mysticalityPercentTarget = 100 * Math.sqrt(factorNeeded) * mysticalityMultiplier;
+            const mysticalityPercentTarget =
+              100 * (Math.sqrt(factorNeeded) * mysticalityMultiplier - 1);
             const spellDamageMultiplier = 1 + getModifier("Spell Damage Percent") / 100;
-            const spellDamagePercentTarget = 100 * Math.sqrt(factorNeeded) * spellDamageMultiplier;
+            const spellDamagePercentTarget =
+              100 * (Math.sqrt(factorNeeded) * spellDamageMultiplier - 1);
             print(
               `Targeting ${mysticalityPercentTarget.toFixed(
                 0
-              )}% myst and ${spellDamagePercentTarget}% SD.`
+              )}% myst and ${spellDamagePercentTarget.toFixed(0)}% SD.`
             );
             boost("Mysticality Percent", mysticalityPercentTarget, 10);
             boost("Spell Damage Percent", spellDamagePercentTarget, 10);
@@ -571,6 +571,9 @@ export function main(argString = ""): void {
         // Just hit the NC. Decrement turns spent to adjust for the fact that Mafia doesn't count it.
         print("Hit the NC. Adjusting turns spent...", "blue");
         incrementTurnsSpentAdjustment();
+        if (get("choiceAdventure1461", -1) === 1) {
+          set("crimbo21GooWeight", get("crimbo21GooWeight", 10) + 1);
+        }
       }
 
       if (have($effect`Beaten Up`)) {
