@@ -226,7 +226,11 @@ function constructLabOutfit(
 
   const accessoryForce = forceEquip.filter((item) => toSlot(item) === $slot`acc1`).length;
 
-  if (accessoryForce < accessorySlots && spellDamageLevel >= 2 && have($item`Space Trip safety headphones`)) {
+  if (
+    accessoryForce < accessorySlots &&
+    spellDamageLevel >= 2 &&
+    have($item`Space Trip safety headphones`)
+  ) {
     preventSlot.push($slot`acc3`);
     equip($slot`acc3`, $item`Space Trip safety headphones`);
   }
