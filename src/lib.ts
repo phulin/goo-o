@@ -1,6 +1,29 @@
-import { print } from "kolmafia";
-import { $locations, get, set, sum } from "libram";
+import { print, removeProperty, visitUrl } from "kolmafia";
+import { $effect, $locations, get, getModifier, have, set, sum } from "libram";
 import options from "./options";
+
+export function requestEntauntaunedColdRes(): number {
+  const description = visitUrl(`desc_effect.php?whicheffect=${$effect`Entauntauned`.descid}`);
+  const match = description.match(/Cold Resistance \(\+(\d+)\)/);
+  return match ? parseInt(match[1]) : 0;
+}
+
+export function entauntaunedColdRes(): number {
+  if (get("entauntaunedColdResistance", 0) === 0) {
+    set("entauntaunedColdResistance", requestEntauntaunedColdRes());
+  }
+  return get("entauntaunedColdResistance", 0);
+}
+
+export function coldRes(): number {
+  let result = getModifier("Cold Resistance");
+  if (have($effect`Entauntauned`)) {
+    result += entauntaunedColdRes();
+  } else {
+    removeProperty("entauntaunedColdResistance");
+  }
+  return result;
+}
 
 export function currentTurnsSpent(): number {
   return sum(

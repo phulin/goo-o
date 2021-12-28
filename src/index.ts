@@ -51,7 +51,9 @@ import { boost } from "./boost";
 import { Macro } from "./combat";
 import { dailies } from "./dailies";
 import {
+  coldRes,
   currentTurnsSpent,
+  entauntaunedColdRes,
   incrementTurnsSpentAdjustment,
   remainingTurns,
   startingTurnsSpent,
@@ -69,7 +71,7 @@ const highDamageSkills = $skills`Fearful Fettucini, Saucegeyser, Weapon of the P
 
 function expectedHp(weight: number): number {
   // This is the maximum possible HP we'd expect.
-  return 1.1 * (3 * (weight - (weight > 50 ? 6 : weight > 40 ? 8 : 10)) ** 3 + 100);
+  return 1.1 * (0.05 * (weight - 5) ** 4 + 100);
 }
 
 function lanternMultiplier(skill: Skill) {
@@ -421,6 +423,7 @@ export function main(argString = ""): void {
         requirement.maximize();
 
         madeProgress = false;
+        print(`madeProgress: ${madeProgress}`);
 
         if (
           options.location === $location`Site Alpha Primary Lab` &&
@@ -439,10 +442,7 @@ export function main(argString = ""): void {
           );
         }
 
-        if (
-          getModifier("Cold Resistance") < coldResTarget &&
-          Math.round(coldResWeightMultiplier) < 32
-        ) {
+        if (coldRes() < coldResTarget && Math.round(coldResWeightMultiplier) < 32) {
           madeProgress = true;
           coldResWeightMultiplier *= 2;
           print(
@@ -454,17 +454,15 @@ export function main(argString = ""): void {
         }
       } while (madeProgress);
 
-      boost("Cold Resistance", coldResTarget, 500);
+      print();
+      print(`==== Turn ${todayTurnsSpent()} out of ${totalTurnsToday()}. ====`, "blue");
+      print("Boosting Cold Res (and possibly Item Drop).", "blue");
+      boost("Cold Resistance", coldResTarget - entauntaunedColdRes(), 500);
       if ($locations`Site Alpha Dormitory, Site Alpha Greenhouse`.includes(options.location)) {
         boost("Item Drop", options.location === $location`Site Alpha Greenhouse` ? 900 : 300, 50);
       }
 
-      print();
-      print(`==== Turn ${todayTurnsSpent()} out of ${totalTurnsToday()}. ====`, "blue");
-      print(
-        `Cold Res Required: ${coldResTarget}, Achieved: ${getModifier("Cold Resistance")}`,
-        "blue"
-      );
+      print(`Cold Res Required: ${coldResTarget}, Achieved: ${coldRes()}`, "blue");
 
       if (options.location === $location`Site Alpha Primary Lab` && skill) {
         if (!settingUpLabSnow) {
@@ -540,7 +538,7 @@ export function main(argString = ""): void {
         restoreHp(0.95 * myMaxhp());
       }
 
-      const achievedColdRes = getModifier("Cold Resistance");
+      const achievedColdRes = coldRes();
       const lastColdRes = get("_crimbo21ColdResistance", 0);
 
       adventureMacroAuto(options.location, macro);
