@@ -119,7 +119,7 @@ export function dailies(): void {
     have($item`Kremlin's Greatest Briefcase`) &&
     getModifier("Cold Resistance", $item`Kremlin's Greatest Briefcase`) < 5
   ) {
-    cliExecute("briefcase enchantment cold");
+    cliExecute("Briefcase enchantment cold");
   }
   if (have($skill`Spirit of Peppermint`)) useSkill($skill`Spirit of Peppermint`);
 
