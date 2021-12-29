@@ -164,20 +164,14 @@ function predictedDamage(skill: Skill): number {
   );
 }
 
-function constructLabOutfit(spellDamageLevel: number, skill: Skill | undefined) {
+function constructLabOutfit(
+  spellDamageLevel: number,
+  skill: Skill | undefined,
+  coldResWeightMultiplier: number
+) {
   const forceEquip = [];
   const preventSlot = [];
-  const acc3 =
-    have($item`Space Trip safety headphones`) && spellDamageLevel >= 2
-      ? $item`Space Trip safety headphones`
-      : $item`cozy scarf`;
-  if (availableAmount($item`ert grey goo ring`) >= 2) {
-    // Equip two ert grey goo rings.
-    preventSlot.push(...$slots`acc1, acc2, acc3`);
-    equip($slot`acc1`, $item`ert grey goo ring`);
-    equip($slot`acc2`, $item`ert grey goo ring`);
-    equip($slot`acc3`, acc3);
-  }
+
   if (have($item`unwrapped knock-off retro superhero cape`)) {
     preventSlot.push($slot`back`);
     if (get("retroCapeSuperhero") !== "heck" || get("retroCapeWashingInstructions") !== "kill") {
@@ -212,6 +206,33 @@ function constructLabOutfit(spellDamageLevel: number, skill: Skill | undefined) 
     } else if (skill === $skill`Fearful Fettucini` && have($item`velour veil`)) {
       forceEquip.push($item`velour veil`);
     }
+  }
+
+  const rings = availableAmount($item`ert grey goo ring`);
+
+  let accessorySlots = 3;
+  // Equip two ert grey goo rings.
+  if (rings >= 1 && coldResWeightMultiplier < 32) {
+    preventSlot.push($slots`acc1`);
+    equip($slot`acc1`, $item`ert grey goo ring`);
+    accessorySlots--;
+  }
+
+  if (rings >= 2 && coldResWeightMultiplier < 16) {
+    preventSlot.push($slots`acc2`);
+    equip($slot`acc2`, $item`ert grey goo ring`);
+    accessorySlots--;
+  }
+
+  const accessoryForce = forceEquip.filter((item) => toSlot(item) === $slot`acc1`).length;
+
+  if (
+    accessoryForce < accessorySlots &&
+    spellDamageLevel >= 2 &&
+    have($item`Space Trip safety headphones`)
+  ) {
+    preventSlot.push($slot`acc3`);
+    equip($slot`acc3`, $item`Space Trip safety headphones`);
   }
 
   const offHandSlots = myFamiliar() === $familiar`Left-Hand Man` ? 2 : 1;
@@ -414,7 +435,9 @@ export function main(argString = ""): void {
               throw `Tried to use free run ${freeRun.name}, but it's not available.`;
             }
           } else {
-            requirement = requirement.merge(constructLabOutfit(spellDamageLevel, skill));
+            requirement = requirement.merge(
+              constructLabOutfit(spellDamageLevel, skill, coldResWeightMultiplier)
+            );
           }
         } else {
           requirement = requirement.merge(constructNonLabOutfit());
