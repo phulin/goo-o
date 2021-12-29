@@ -4081,14 +4081,14 @@ $({
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Up": () => (/* binding */ startingTurnsSpent)
 /* harmony export */ });
-/* unused harmony exports requestEntauntaunedColdRes, entauntaunedColdRes, coldRes, currentTurnsSpent, currentTurnsSpentForColdRes, todayTurnsSpent, todayTurnsSpentForColdRes, totalTurnsToday, remainingTurns, incrementTurnsSpentAdjustment, turnsSpentAdjustment */
+/* unused harmony exports requestEntauntaunedColdRes, entauntaunedColdRes, coldRes, currentTurnsSpent, currentTurnsSpentForColdRes, todayTurnsSpent, todayTurnsSpentForColdRes, totalTurnsToday, remainingTurns, incrementTurnsSpentAdjustment, turnsSpentAdjustment, expectedHp, lanternMultiplier, predictedDamage */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8588);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(678);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6672);
 /* harmony import */ var _options__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(330);
-var _templateObject, _templateObject2, _templateObject3;
+var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29;
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
@@ -4159,6 +4159,92 @@ function turnsSpentAdjustment() {
   set("_crimbo21TurnsSpentAdjustment", result);
   return result;
 }
+function expectedHp(weight) {
+  // This is the maximum possible HP we'd expect.
+  return 1.1 * (Math.pow(weight - 5, 4) / 18 + 100);
+}
+function lanternMultiplier(skill) {
+  var element;
+
+  if (skill === $skill(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Saucegeyser"])))) {
+    element = getModifier("Hot Spell Damage") > getModifier("Cold Spell Damage") ? "hot" : "cold";
+  } else if (skill === $skill(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Fearful Fettucini"])))) {
+    element = "spooky";
+  } else if (skill.class === $class(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Pastamancer"]))) && have($effect(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Spirit of Cayenne"]))))) {
+    element = "hot";
+  } else if (skill.class === $class(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Pastamancer"]))) && have($effect(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Spirit of Peppermint"]))))) {
+    element = "cold";
+  } else if (skill.class === $class(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Pastamancer"]))) && have($effect(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Spirit of Garlic"]))))) {
+    element = "stench";
+  } else if (skill.class === $class(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Pastamancer"]))) && have($effect(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Spirit of Wormwood"]))))) {
+    element = "spooky";
+  } else if (skill.class === $class(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Pastamancer"]))) && have($effect(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Spirit of Bacon Grease"]))))) {
+    element = "sleaze";
+  } else {
+    throw "Unrecognized skill ".concat(skill, ".");
+  }
+
+  var damageMultipliers = {
+    physical: 0,
+    hot: 0,
+    cold: 0,
+    stench: 0,
+    spooky: 0,
+    sleaze: 0
+  };
+  damageMultipliers[element] = 1;
+
+  if (skill === $skill(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Weapon of the Pastalord"])))) {
+    damageMultipliers.physical = 1;
+  }
+
+  if (haveEquipped($item(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Rain-Doh green lantern"]))))) {
+    damageMultipliers.stench += damageMultipliers[element];
+  }
+
+  if (haveEquipped($item(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["snow mobile"]))))) {
+    damageMultipliers.cold += damageMultipliers[element];
+  }
+
+  if (haveEquipped($item(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["meteorb"]))))) {
+    damageMultipliers.hot += damageMultipliers[element];
+  }
+
+  if (haveEquipped($item(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && get("retroCapeSuperhero") === "heck" && get("retroCapeWashingInstructions") === "kill") {
+    damageMultipliers.spooky += damageMultipliers[element];
+  }
+
+  if (haveEquipped($item(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["porcelain porkpie"])))) && skill.class === $class(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Pastamancer"])))) {
+    damageMultipliers.sleaze += damageMultipliers[element];
+  }
+
+  if (get("_crimbo21LabSnowing")) {
+    damageMultipliers.cold *= 1.5;
+  }
+
+  return sumNumbers(Object.values(damageMultipliers));
+}
+function predictedDamage(skill) {
+  var multiplier = () => {
+    switch (skill) {
+      case $skill(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Saucegeyser"]))):
+        return 0.4;
+
+      case $skill(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Weapon of the Pastalord"]))):
+        return haveEquipped($item(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["aerogel apron"])))) ? 0.5 : 0.25;
+
+      case $skill(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Fearful Fettucini"]))):
+        return haveEquipped($item(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["velour veil"])))) ? 1.5 : 0.5;
+
+      default:
+        return 0;
+    }
+  };
+
+  var criticalMultiplier = () => getModifier("Spell Critical Percent") >= 89 ? haveEquipped($item(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["dark baconstone ring"])))) ? 3 : 2 : 1;
+
+  return multiplier() * myBuffedstat($stat(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Mysticality"])))) * (1 + getModifier("Spell Damage Percent") / 100) * criticalMultiplier() * (1 - 0.004 * getModifier("Monster Level")) * lanternMultiplier(skill);
+}
 
 /***/ }),
 
@@ -4177,10 +4263,11 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+var options = {
   location: (0,libram__WEBPACK_IMPORTED_MODULE_1__/* .$location */ .PG)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Site Alpha Dormitory"]))),
   stopTurnsSpent: (0,_lib__WEBPACK_IMPORTED_MODULE_0__/* .startingTurnsSpent */ .Up)() + 150
-});
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (options);
 
 /***/ }),
 
