@@ -94,7 +94,7 @@ export function turnsSpentAdjustment(): number {
 
 export function expectedHp(weight: number): number {
   // This is the maximum possible HP we'd expect.
-  return 1.1 * ((weight - 5) ** 4 / 18 + 100);
+  return 1.1 * ((weight - 4) ** 4 / 20 + 100);
 }
 
 export function lanternMultiplier(skill: Skill): number {
