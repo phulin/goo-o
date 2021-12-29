@@ -228,6 +228,7 @@ function constructLabOutfit(
 
   if (
     accessoryForce < accessorySlots &&
+    !forceEquip.includes($item`velour veil`) &&
     spellDamageLevel >= 2 &&
     have($item`Space Trip safety headphones`)
   ) {
