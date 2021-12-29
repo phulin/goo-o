@@ -4161,7 +4161,7 @@ function turnsSpentAdjustment() {
 }
 function expectedHp(weight) {
   // This is the maximum possible HP we'd expect.
-  return 1.1 * (Math.pow(weight - 5, 4) / 18 + 100);
+  return 1.1 * (Math.pow(weight - 4, 4) / 20 + 100);
 }
 function lanternMultiplier(skill) {
   var element;
