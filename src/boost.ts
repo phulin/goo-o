@@ -30,6 +30,14 @@ const modifierCandidatePotions = {
     ...$items`lotion of hotness, lotion of spookiness, cyan seashell`,
     ...$items`sticky lava globs, pec oil`,
   ],
+  "Muscle Percent": [
+    ...$items`jug of hamethyst juice, Lobos Mints, flask of hamethyst juice, black facepaint`,
+    ...$items`pirate brochure, seal-brain elixir, Bruno's blessing of Mars, swamp lolly`,
+    ...$items`miniature power pill, potion of temporary gr8ness, candy brain, chicle de salchicha`,
+    ...$items`Ferrigno's Elixir of Power, Mick's IcyVapoHotness Rub, Mer-kin strongjuice`,
+    ...$items`fortifying hot cocoa, tomato juice of powerful power, blood of the Wereseal`,
+    ...$items`virgin jello shot, Ben-Gal™ Balm, philter of phorce, votive of confidence`,
+  ],
   "Mysticality Percent": [
     ...$items`power pill, vial of baconstone juice, future drug: Smartinex, seal-brain elixir`,
     ...$items`Snarf berry, Lobos Mints, pressurized potion of perspicacity, black sheepskin diploma`,
@@ -161,7 +169,12 @@ class Potion {
 }
 
 export function boost(
-  modifier: "Item Drop" | "Cold Resistance" | "Mysticality Percent" | "Spell Damage Percent",
+  modifier:
+    | "Item Drop"
+    | "Cold Resistance"
+    | "Muscle Percent"
+    | "Mysticality Percent"
+    | "Spell Damage Percent",
   target: number,
   maxUnitCost: number
 ): void {

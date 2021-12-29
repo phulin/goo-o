@@ -1,12 +1,9 @@
 import {
-  availableAmount,
-  cliExecute,
   eat,
   equip,
-  haveEquipped,
   lastChoice,
   myAdventures,
-  myBuffedstat,
+  myBasestat,
   myFamiliar,
   myHp,
   myMaxhp,
@@ -16,11 +13,9 @@ import {
   restoreMp,
   retrieveItem,
   setAutoAttack,
-  toSlot,
   useFamiliar,
 } from "kolmafia";
 import {
-  $class,
   $effect,
   $familiar,
   $familiars,
@@ -31,8 +26,6 @@ import {
   $monster,
   $skill,
   $skills,
-  $slot,
-  $slots,
   $stat,
   adventureMacroAuto,
   clamp,
@@ -45,16 +38,22 @@ import {
   Requirement,
   set,
   sinceKolmafiaRevision,
-  sumNumbers,
 } from "libram";
 import { boost } from "./boost";
 import { Macro } from "./combat";
+import {
+  constructLabDelevelOutfit,
+  constructLabSpellDamageOutfit,
+  constructNonLabOutfit,
+} from "./outfit";
 import { dailies } from "./dailies";
 import {
   coldRes,
   currentTurnsSpent,
   entauntaunedColdRes,
+  expectedHp,
   incrementTurnsSpentAdjustment,
+  predictedDamage,
   remainingTurns,
   startingTurnsSpent,
   todayTurnsSpent,
@@ -65,196 +64,10 @@ import { mood } from "./mood";
 import options from "./options";
 import { fillUpOnPizza } from "./pizza";
 import { propertyManager } from "./properties";
+import { isLabStrategy, LabStrategy, pickLabStrategyAndSetup } from "./strategy";
 
 const stasisFamiliars = $familiars`Stocking Mimic, Ninja Pirate Zombie Robot, Cocoabo`;
 const highDamageSkills = $skills`Fearful Fettucini, Saucegeyser, Weapon of the Pastalord`;
-
-function expectedHp(weight: number): number {
-  // This is the maximum possible HP we'd expect.
-  return 1.1 * ((weight - 5) ** 4 / 18 + 100);
-}
-
-function lanternMultiplier(skill: Skill) {
-  let element: "hot" | "cold" | "stench" | "spooky" | "sleaze";
-  if (skill === $skill`Saucegeyser`) {
-    element = getModifier("Hot Spell Damage") > getModifier("Cold Spell Damage") ? "hot" : "cold";
-  } else if (skill === $skill`Fearful Fettucini`) {
-    element = "spooky";
-  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Cayenne`)) {
-    element = "hot";
-  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Peppermint`)) {
-    element = "cold";
-  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Garlic`)) {
-    element = "stench";
-  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Wormwood`)) {
-    element = "spooky";
-  } else if (skill.class === $class`Pastamancer` && have($effect`Spirit of Bacon Grease`)) {
-    element = "sleaze";
-  } else {
-    throw `Unrecognized skill ${skill}.`;
-  }
-
-  const damageMultipliers = {
-    physical: 0,
-    hot: 0,
-    cold: 0,
-    stench: 0,
-    spooky: 0,
-    sleaze: 0,
-  };
-  damageMultipliers[element] = 1;
-  if (skill === $skill`Weapon of the Pastalord`) {
-    damageMultipliers.physical = 1;
-  }
-
-  if (haveEquipped($item`Rain-Doh green lantern`)) {
-    damageMultipliers.stench += damageMultipliers[element];
-  }
-  if (haveEquipped($item`snow mobile`)) {
-    damageMultipliers.cold += damageMultipliers[element];
-  }
-  if (haveEquipped($item`meteorb`)) {
-    damageMultipliers.hot += damageMultipliers[element];
-  }
-  if (
-    haveEquipped($item`unwrapped knock-off retro superhero cape`) &&
-    get("retroCapeSuperhero") === "heck" &&
-    get("retroCapeWashingInstructions") === "kill"
-  ) {
-    damageMultipliers.spooky += damageMultipliers[element];
-  }
-  if (haveEquipped($item`porcelain porkpie`) && skill.class === $class`Pastamancer`) {
-    damageMultipliers.sleaze += damageMultipliers[element];
-  }
-
-  if (get("_crimbo21LabSnowing")) {
-    damageMultipliers.cold *= 1.5;
-  }
-
-  return sumNumbers(Object.values(damageMultipliers));
-}
-
-function predictedDamage(skill: Skill): number {
-  const multiplier = () => {
-    switch (skill) {
-      case $skill`Saucegeyser`:
-        return 0.4;
-      case $skill`Weapon of the Pastalord`:
-        return haveEquipped($item`aerogel apron`) ? 0.5 : 0.25;
-      case $skill`Fearful Fettucini`:
-        return haveEquipped($item`velour veil`) ? 1.5 : 0.5;
-      default:
-        return 0;
-    }
-  };
-  const criticalMultiplier = () =>
-    getModifier("Spell Critical Percent") >= 89
-      ? haveEquipped($item`dark baconstone ring`)
-        ? 3
-        : 2
-      : 1;
-
-  return (
-    multiplier() *
-    myBuffedstat($stat`Mysticality`) *
-    (1 + getModifier("Spell Damage Percent") / 100) *
-    criticalMultiplier() *
-    (1 - 0.004 * getModifier("Monster Level")) *
-    lanternMultiplier(skill)
-  );
-}
-
-function constructLabOutfit(
-  spellDamageLevel: number,
-  skill: Skill | undefined,
-  coldResWeightMultiplier: number
-) {
-  const forceEquip = [];
-  const preventSlot = [];
-
-  if (have($item`unwrapped knock-off retro superhero cape`)) {
-    preventSlot.push($slot`back`);
-    if (get("retroCapeSuperhero") !== "heck" || get("retroCapeWashingInstructions") !== "kill") {
-      cliExecute("retrocape heck kill");
-    }
-  }
-
-  if (spellDamageLevel >= 1) {
-    // Meteorb is better for geyser, snow mobile for everything else.
-    const lantern1 = skill === $skill`Saucegeyser` ? $item`meteorb` : $item`snow mobile`;
-    if (!have(lantern1)) retrieveItem(lantern1);
-    forceEquip.push(lantern1);
-  }
-  if (spellDamageLevel >= 2) {
-    if (myFamiliar() === $familiar`Left-Hand Man`) {
-      if (have($item`HOA regulation book`)) {
-        forceEquip.push($item`HOA regulation book`);
-      } else {
-        // Pick the other lantern here.
-        const lantern2 = skill === $skill`Saucegeyser` ? $item`snow mobile` : $item`meteorb`;
-        if (!have(lantern2)) retrieveItem(lantern2);
-        forceEquip.push(lantern2);
-      }
-    }
-    if (skill === $skill`Saucegeyser` && have($item`gabardine garibaldi`)) {
-      forceEquip.push($item`gabardine garibaldi`);
-    } else if (skill && skill.class === $class`Pastamancer` && have($item`porcelain porkpie`)) {
-      forceEquip.push($item`porcelain porkpie`);
-    }
-    if (skill === $skill`Weapon of the Pastalord` && have($item`aerogel apron`)) {
-      forceEquip.push($item`aerogel apron`);
-    } else if (skill === $skill`Fearful Fettucini` && have($item`velour veil`)) {
-      forceEquip.push($item`velour veil`);
-    }
-  }
-
-  const rings = availableAmount($item`ert grey goo ring`);
-
-  let accessorySlots = 3;
-  // Equip two ert grey goo rings.
-  if (rings >= 1 && coldResWeightMultiplier < 32) {
-    preventSlot.push($slots`acc1`);
-    equip($slot`acc1`, $item`ert grey goo ring`);
-    accessorySlots--;
-  }
-
-  if (rings >= 2 && coldResWeightMultiplier < 16) {
-    preventSlot.push($slots`acc2`);
-    equip($slot`acc2`, $item`ert grey goo ring`);
-    accessorySlots--;
-  }
-
-  const accessoryForce = forceEquip.filter((item) => toSlot(item) === $slot`acc1`).length;
-
-  if (
-    accessoryForce < accessorySlots &&
-    spellDamageLevel >= 2 &&
-    have($item`Space Trip safety headphones`)
-  ) {
-    preventSlot.push($slot`acc3`);
-    equip($slot`acc3`, $item`Space Trip safety headphones`);
-  }
-
-  const offHandSlots = myFamiliar() === $familiar`Left-Hand Man` ? 2 : 1;
-  const offHandForce = forceEquip.filter((item) => toSlot(item) === $slot`off-hand`).length;
-  if (offHandForce < offHandSlots) {
-    forceEquip.push($item`goo magnet`);
-  }
-
-  return new Requirement([], { forceEquip, preventSlot });
-}
-
-function constructNonLabOutfit() {
-  const forceEquip = [];
-  if (have($item`Lil' Doctor™ bag`) && get("_chestXRayUsed") < 3) {
-    forceEquip.push($item`Lil' Doctor™ bag`);
-  }
-  // Force goo magnet for all but the last 30 turns.
-  if (have($item`goo magnet`) && options.stopTurnsSpent - currentTurnsSpent() >= 30) {
-    forceEquip.push($item`goo magnet`);
-  }
-  return new Requirement([], { forceEquip });
-}
 
 function chooseCombatSkill() {
   if (options.location !== $location`Site Alpha Primary Lab`) return undefined;
@@ -292,6 +105,8 @@ export function main(argString = ""): void {
       options.location = $location`Site Alpha Quarry`;
     } else if (arg === "lab") {
       options.location = $location`Site Alpha Primary Lab`;
+    } else if (isLabStrategy(arg)) {
+      options.forceStrategy = arg;
     } else if (arg.match(/^\d+$/)) {
       options.stopTurnsSpent = startingTurnsSpent() + parseInt(arg);
     } else if (maxMatch) {
@@ -349,13 +164,19 @@ export function main(argString = ""): void {
       "blue"
     );
 
+    let labStrategy: LabStrategy | undefined = undefined;
+    if (options.location === $location`Site Alpha Primary Lab`) {
+      labStrategy = pickLabStrategyAndSetup();
+      print(`Using lab strategy ${labStrategy}.`, "blue");
+    }
+
     while (remainingTurns() > 0 && myAdventures() > 0) {
       const remaining = clamp(remainingTurns(), 0, myAdventures());
 
-      mood().execute(remaining);
+      mood(labStrategy).execute(remaining);
       if (have($item`velour viscometer`) && !have($effect`Scariersauce`)) {
         equip($item`velour viscometer`);
-        mood().execute(remaining);
+        mood(labStrategy).execute(remaining);
       }
 
       const banished = [...getBanishedMonsters().values()];
@@ -369,7 +190,9 @@ export function main(argString = ""): void {
       }
 
       const settingUpLabSnow =
-        have($familiar`Ghost of Crimbo Cheer`) && !get("_crimbo21LabSnowing", false);
+        labStrategy === "spell" &&
+        have($familiar`Ghost of Crimbo Cheer`) &&
+        !get("_crimbo21LabSnowing", false);
 
       if ($locations`Site Alpha Quarry`.includes(options.location)) {
         useFamiliar(
@@ -400,20 +223,24 @@ export function main(argString = ""): void {
         : 1;
 
       const weight = get("crimbo21GooWeight", 10);
-      const skill = chooseCombatSkill();
+      const skill = labStrategy === "spell" ? chooseCombatSkill() : undefined;
       const coldResTarget = Math.floor((15 + todayTurnsSpentForColdRes()) / 3);
 
       let madeProgress;
       let labSnowFreeRun: FreeRun | undefined = undefined;
 
       do {
+        const strategySnippet =
+          labStrategy === "spell"
+            ? ["0.1 Spell Damage Percent, 0.1 Mysticality Percent"]
+            : labStrategy === "delevel"
+            ? ["0.001 HP"]
+            : [];
         let requirement = new Requirement(
           [
             ...(itemDropWeight > 0 ? [`${itemDropWeight} Item Drop`] : []),
             `${(5 * coldResWeightMultiplier).toFixed(0)} Cold Resistance`,
-            ...(options.location === $location`Site Alpha Primary Lab`
-              ? ["0.1 Spell Damage Percent, 0.1 Mysticality Percent"]
-              : []),
+            ...strategySnippet,
           ],
           {
             preventEquip: $items`broken champagne bottle`,
@@ -422,7 +249,7 @@ export function main(argString = ""): void {
         );
 
         if (options.location === $location`Site Alpha Primary Lab`) {
-          if (have($familiar`Ghost of Crimbo Cheer`) && !get("_crimbo21LabSnowing")) {
+          if (settingUpLabSnow) {
             // Find us a non-familiar free run.
             const freeRun = ensureFreeRun(false);
             if (freeRun.available()) {
@@ -434,21 +261,28 @@ export function main(argString = ""): void {
             } else {
               throw `Tried to use free run ${freeRun.name}, but it's not available.`;
             }
-          } else {
+          } else if (labStrategy === "spell") {
             requirement = requirement.merge(
-              constructLabOutfit(spellDamageLevel, skill, coldResWeightMultiplier)
+              constructLabSpellDamageOutfit(spellDamageLevel, skill, coldResWeightMultiplier)
             );
+          } else if (labStrategy === "delevel") {
+            requirement = requirement.merge(constructLabDelevelOutfit(coldResWeightMultiplier));
+          } else {
+            throw "Unrecognized strategy.";
           }
         } else {
           requirement = requirement.merge(constructNonLabOutfit());
         }
 
-        requirement.maximize();
+        if (!requirement.maximize()) {
+          throw "Maximizer failed. This must be a bug.";
+        }
 
         madeProgress = false;
 
         if (
           options.location === $location`Site Alpha Primary Lab` &&
+          labStrategy === "spell" &&
           !settingUpLabSnow &&
           skill &&
           predictedDamage(skill) < expectedHp(weight) &&
@@ -486,7 +320,7 @@ export function main(argString = ""): void {
       print(`Cold Res Required: ${coldResTarget}, Achieved: ${coldRes()}`, "blue");
 
       if (options.location === $location`Site Alpha Primary Lab` && skill) {
-        if (!settingUpLabSnow) {
+        if (labStrategy === "spell" && !settingUpLabSnow) {
           print(
             `Predicting ${predictedDamage(skill).toFixed(0)} damage against ${expectedHp(
               weight
@@ -511,15 +345,28 @@ export function main(argString = ""): void {
             boost("Mysticality Percent", mysticalityPercentTarget, 10);
             boost("Spell Damage Percent", spellDamagePercentTarget, 10);
             if (predictedDamage(skill) < expectedHp(weight)) {
-              throw "Somehow our goos got too big - use stench jelly to scale them back down.";
+              throw `Somehow our goos got too big (${predictedDamage(skill).toFixed(
+                0
+              )} damage < ${expectedHp(weight).toFixed(
+                0
+              )} HP) - maybe use stench jelly to scale them back down.`;
             }
           }
+        } else if (labStrategy === "delevel") {
+          // Need roughly 6,000 HP.
+          const hpTarget = 6000;
+          const hpMultiplier = 1 + getModifier("Maximum HP Percent") / 100;
+          const muscleTarget = hpTarget / hpMultiplier;
+          const musclePercentTarget = 100 * (muscleTarget / myBasestat($stat`Muscle`) - 1);
+          print(`Not enough HP. Trying to get to ${musclePercentTarget.toFixed(0)}% mus.`);
+          boost("Muscle Percent", musclePercentTarget, 10);
         }
 
         if (
           weight < maxWeight &&
-          weight < 58 &&
-          (predictedDamage(skill) >= expectedHp(weight + 1) || Number.isFinite(maxWeight))
+          (labStrategy === "delevel" ||
+            predictedDamage(skill) >= expectedHp(weight + 1) ||
+            Number.isFinite(maxWeight))
         ) {
           // Increase if we already have enough damage, or the user set a max weight and we're below it.
           // Turn the knob to the right (more ML).
@@ -534,10 +381,16 @@ export function main(argString = ""): void {
       }
 
       const macro =
-        options.location === $location`Site Alpha Primary Lab` && skill
-          ? Macro.externalIf(settingUpLabSnow, labSnowFreeRun?.macro ?? new Macro())
-              .skill(skill)
-              .repeat()
+        options.location === $location`Site Alpha Primary Lab`
+          ? labStrategy === "spell" && skill
+            ? Macro.externalIf(settingUpLabSnow, labSnowFreeRun?.macro ?? new Macro())
+                .skill(skill)
+                .repeat()
+            : Macro.skill($skill`Disarming Thrust`)
+                .trySkill($skill`Curse of Weaksauce`)
+                .trySkill($skill`Summon Love Mosquito`)
+                .skill($skill`Blow a Robo-Kiss`)
+                .repeat()
           : Macro.if_($monster`gooified elf-thing`, Macro.item($item`human musk`))
               .if_($monster`gooified flower`, Macro.item($item`human musk`))
               .externalIf(
