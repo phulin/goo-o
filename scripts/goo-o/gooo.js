@@ -6018,7 +6018,7 @@ function dailies() {
   (0,external_kolmafia_.retrieveItem)((0,template_string/* $item */.xr)(dailies_templateObject19 || (dailies_templateObject19 = dailies_taggedTemplateLiteral(["seal tooth"]))));
 
   if ((0,lib/* have */.lf)((0,template_string/* $item */.xr)(dailies_templateObject20 || (dailies_templateObject20 = dailies_taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))) && (0,dist_modifier/* get */.U)("Cold Resistance", (0,template_string/* $item */.xr)(dailies_templateObject21 || (dailies_templateObject21 = dailies_taggedTemplateLiteral(["Kremlin's Greatest Briefcase"])))) < 5) {
-    (0,external_kolmafia_.cliExecute)("briefcase enchantment cold");
+    (0,external_kolmafia_.cliExecute)("Briefcase enchantment cold");
   }
 
   if ((0,lib/* have */.lf)((0,template_string/* $skill */.tm)(dailies_templateObject22 || (dailies_templateObject22 = dailies_taggedTemplateLiteral(["Spirit of Peppermint"]))))) (0,external_kolmafia_.useSkill)((0,template_string/* $skill */.tm)(dailies_templateObject23 || (dailies_templateObject23 = dailies_taggedTemplateLiteral(["Spirit of Peppermint"])))); // eslint-disable-next-line libram/verify-constants
