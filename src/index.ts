@@ -67,7 +67,9 @@ import { propertyManager } from "./properties";
 import { isLabStrategy, LabStrategy, pickLabStrategyAndSetup } from "./strategy";
 
 const stasisFamiliars = $familiars`Stocking Mimic, Ninja Pirate Zombie Robot, Cocoabo`;
-const highDamageSkills = $skills`Fearful Fettucini, Saucegeyser, Weapon of the Pastalord`;
+const highDamageSkills = $skills`Fearful Fettucini, Saucegeyser`;
+
+if (have($skill`Flavour of Magic`)) highDamageSkills.push($skill`Weapon of the Pastalord`);
 
 function chooseCombatSkill() {
   if (options.location !== $location`Site Alpha Primary Lab`) return undefined;
