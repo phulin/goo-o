@@ -123,7 +123,6 @@ export function dailies(): void {
   }
   if (have($skill`Spirit of Peppermint`)) useSkill($skill`Spirit of Peppermint`);
 
-  // eslint-disable-next-line libram/verify-constants
   if (options.location === $location`Site Alpha Primary Lab`) {
     for (const effect of $effects`Ur-Kel's Aria of Annoyance, Pride of the Puffin, Drescher's Annoying Noise`) {
       uneffect(effect);

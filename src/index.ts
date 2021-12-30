@@ -8,6 +8,7 @@ import {
   myHp,
   myMaxhp,
   myMp,
+  myPrimestat,
   print,
   restoreHp,
   restoreMp,
@@ -170,6 +171,9 @@ export function main(argString = ""): void {
     if (options.location === $location`Site Alpha Primary Lab`) {
       labStrategy = pickLabStrategyAndSetup();
       print(`Using lab strategy ${labStrategy}.`, "blue");
+      if (labStrategy === "delevel") {
+        propertyManager.set({ hpAutoRecovery: 0.95, hpAutoRecoveryTarget: 1.0 });
+      }
     }
 
     while (remainingTurns() > 0 && myAdventures() > 0) {
@@ -321,8 +325,8 @@ export function main(argString = ""): void {
 
       print(`Cold Res Required: ${coldResTarget}, Achieved: ${coldRes()}`, "blue");
 
-      if (options.location === $location`Site Alpha Primary Lab` && skill) {
-        if (labStrategy === "spell" && !settingUpLabSnow) {
+      if (options.location === $location`Site Alpha Primary Lab`) {
+        if (labStrategy === "spell" && !settingUpLabSnow && skill) {
           print(
             `Predicting ${predictedDamage(skill).toFixed(0)} damage against ${expectedHp(
               weight
@@ -355,19 +359,24 @@ export function main(argString = ""): void {
             }
           }
         } else if (labStrategy === "delevel") {
-          // Need roughly 6,000 HP.
-          const hpTarget = 6000;
-          const hpMultiplier = 1 + getModifier("Maximum HP Percent") / 100;
-          const muscleTarget = hpTarget / hpMultiplier;
-          const musclePercentTarget = 100 * (muscleTarget / myBasestat($stat`Muscle`) - 1);
-          print(`Not enough HP. Trying to get to ${musclePercentTarget.toFixed(0)}% mus.`);
-          boost("Muscle Percent", musclePercentTarget, 10);
+          // Need roughly 15,000 HP.
+          const hpTarget = 15000;
+          if (myMaxhp() < hpTarget) {
+            const hpMultiplier =
+              1 +
+              getModifier("Maximum HP Percent") / 100 +
+              (myPrimestat() === $stat`Muscle` ? 0.5 : 0);
+            const muscleTarget = hpTarget / hpMultiplier;
+            const musclePercentTarget = 100 * (muscleTarget / myBasestat($stat`Muscle`) - 1);
+            print(`Not enough HP. Trying to get to ${musclePercentTarget.toFixed(0)}% mus.`);
+            boost("Muscle Percent", musclePercentTarget, 10);
+          }
         }
 
         if (
           weight < maxWeight &&
           (labStrategy === "delevel" ||
-            predictedDamage(skill) >= expectedHp(weight + 1) ||
+            (skill && predictedDamage(skill) >= expectedHp(weight + 1)) ||
             Number.isFinite(maxWeight))
         ) {
           // Increase if we already have enough damage, or the user set a max weight and we're below it.

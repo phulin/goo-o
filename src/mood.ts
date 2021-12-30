@@ -41,7 +41,10 @@ export function mood(labStrategy?: LabStrategy): Mood {
       mood.skill($skill`Carol of the Hells`);
       mood.skill($skill`Song of Sauce`);
     } else if (labStrategy === "delevel") {
-      if (myBasestat($stat`Muscle`) < 5000) mood.skill($skill`Song of Starch`);
+      if (myBasestat($stat`Muscle`) < 15000) {
+        mood.skill($skill`Song of Starch`);
+        mood.potion($item`Chubby and Plump bar`, 10);
+      }
       mood.skill($skill`Ruthless Efficiency`);
     }
   } else {
