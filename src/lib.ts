@@ -1,4 +1,4 @@
-import { haveEquipped, myBuffedstat, print, removeProperty, visitUrl } from "kolmafia";
+import { haveEquipped, myBuffedstat, print, visitUrl } from "kolmafia";
 import {
   $class,
   $effect,
@@ -15,27 +15,11 @@ import {
 } from "libram";
 import options from "./options";
 
-export function requestEntauntaunedColdRes(): number {
-  const description = visitUrl(`desc_effect.php?whicheffect=${$effect`Entauntauned`.descid}`);
-  const match = description.match(/Cold Resistance \(\+(\d+)\)/);
-  return match ? parseInt(match[1]) : 0;
-}
-
-export function entauntaunedColdRes(): number {
-  if (get("entauntaunedColdResistance", 0) === 0) {
-    set("entauntaunedColdResistance", requestEntauntaunedColdRes());
-  }
-  return get("entauntaunedColdResistance", 0);
-}
-
 export function coldRes(): number {
-  let result = getModifier("Cold Resistance");
-  if (have($effect`Entauntauned`)) {
-    result += entauntaunedColdRes();
-  } else {
-    removeProperty("entauntaunedColdResistance");
+  if (have($effect`Entauntauned`) && get("entauntaunedColdRes", 0) === 0) {
+    visitUrl(`desc_effect.php?whicheffect=${$effect`Entauntauned`.descid}`);
   }
-  return result;
+  return getModifier("Cold Resistance");
 }
 
 export function currentTurnsSpent(): number {

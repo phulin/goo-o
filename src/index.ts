@@ -51,7 +51,6 @@ import { dailies } from "./dailies";
 import {
   coldRes,
   currentTurnsSpent,
-  entauntaunedColdRes,
   expectedHp,
   incrementTurnsSpentAdjustment,
   predictedDamage,
@@ -91,7 +90,7 @@ function chooseCombatSkill() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(26073);
+  sinceKolmafiaRevision(26078);
 
   const args = argString.split(/\s+/g);
   let maxWeight = Infinity;
@@ -318,7 +317,7 @@ export function main(argString = ""): void {
 
       print();
       print(`==== Turn ${todayTurnsSpent()} out of ${totalTurnsToday()}. ====`, "blue");
-      boost("Cold Resistance", coldResTarget - entauntaunedColdRes(), 500);
+      boost("Cold Resistance", coldResTarget, 500);
       if ($locations`Site Alpha Dormitory, Site Alpha Greenhouse`.includes(options.location)) {
         boost("Item Drop", options.location === $location`Site Alpha Greenhouse` ? 900 : 300, 50);
       }
