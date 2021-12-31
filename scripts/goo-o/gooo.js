@@ -7030,7 +7030,7 @@ function chooseCombatSkill() {
 
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(26073);
+  sinceKolmafiaRevision(26078);
   var args = argString.split(/\s+/g);
   var maxWeight = Infinity;
 
@@ -7214,7 +7214,7 @@ function main() {
 
       (0,external_kolmafia_.print)();
       (0,external_kolmafia_.print)("==== Turn ".concat((0,src_lib/* todayTurnsSpent */.U)(), " out of ").concat((0,src_lib/* totalTurnsToday */.ui)(), ". ===="), "blue");
-      boost("Cold Resistance", coldResTarget - (0,src_lib/* entauntaunedColdRes */.sD)(), 500);
+      boost("Cold Resistance", coldResTarget, 500);
 
       if ((0,template_string/* $locations */.xw)(src_templateObject33 || (src_templateObject33 = src_taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse"]))).includes(options/* default.location */.Z.location)) {
         boost("Item Drop", options/* default.location */.Z.location === (0,template_string/* $location */.PG)(src_templateObject34 || (src_templateObject34 = src_taggedTemplateLiteral(["Site Alpha Greenhouse"]))) ? 900 : 300, 50);
@@ -7341,7 +7341,6 @@ function main() {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "sD": () => (/* binding */ entauntaunedColdRes),
 /* harmony export */   "s7": () => (/* binding */ coldRes),
 /* harmony export */   "OF": () => (/* binding */ currentTurnsSpent),
 /* harmony export */   "Up": () => (/* binding */ startingTurnsSpent),
@@ -7353,13 +7352,13 @@ function main() {
 /* harmony export */   "sj": () => (/* binding */ expectedHp),
 /* harmony export */   "Q_": () => (/* binding */ predictedDamage)
 /* harmony export */ });
-/* unused harmony exports requestEntauntaunedColdRes, currentTurnsSpentForColdRes, turnsSpentAdjustment, lanternMultiplier */
+/* unused harmony exports currentTurnsSpentForColdRes, turnsSpentAdjustment, lanternMultiplier */
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7530);
 /* harmony import */ var kolmafia__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(kolmafia__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(678);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6672);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1245);
-/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3311);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3311);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(678);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6672);
+/* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1245);
 /* harmony import */ var libram__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8588);
 /* harmony import */ var _options__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(330);
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29;
@@ -7369,39 +7368,23 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 
 
-function requestEntauntaunedColdRes() {
-  var description = (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("desc_effect.php?whicheffect=".concat((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$effect */ ._G)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Entauntauned"]))).descid));
-  var match = description.match(/Cold Resistance \(\+(\d+)\)/);
-  return match ? parseInt(match[1]) : 0;
-}
-function entauntaunedColdRes() {
-  if ((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("entauntaunedColdResistance", 0) === 0) {
-    (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .set */ .t8)("entauntaunedColdResistance", requestEntauntaunedColdRes());
-  }
-
-  return (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("entauntaunedColdResistance", 0);
-}
 function coldRes() {
-  var result = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U)("Cold Resistance");
-
-  if ((0,libram__WEBPACK_IMPORTED_MODULE_5__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$effect */ ._G)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Entauntauned"]))))) {
-    result += entauntaunedColdRes();
-  } else {
-    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.removeProperty)("entauntaunedColdResistance");
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$effect */ ._G)(_templateObject || (_templateObject = _taggedTemplateLiteral(["Entauntauned"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("entauntaunedColdRes", 0) === 0) {
+    (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.visitUrl)("desc_effect.php?whicheffect=".concat((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$effect */ ._G)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["Entauntauned"]))).descid));
   }
 
-  return result;
+  return (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U)("Cold Resistance");
 }
 function currentTurnsSpent() {
   return (0,libram__WEBPACK_IMPORTED_MODULE_6__/* .sum */ .Sm)( // eslint-disable-next-line libram/verify-constants
-  (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$locations */ .xw)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry, Site Alpha Primary Lab"]))), loc => loc.turnsSpent);
+  (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$locations */ .xw)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["Site Alpha Dormitory, Site Alpha Greenhouse, Site Alpha Quarry, Site Alpha Primary Lab"]))), loc => loc.turnsSpent);
 }
 function currentTurnsSpentForColdRes() {
   return currentTurnsSpent() + turnsSpentAdjustment();
 }
 function startingTurnsSpent() {
-  var result = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
-  (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
+  var result = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21StartingTurnsSpent", currentTurnsSpent());
+  (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21StartingTurnsSpent", result);
   return result;
 }
 function todayTurnsSpent() {
@@ -7417,20 +7400,20 @@ function remainingTurns() {
   return _options__WEBPACK_IMPORTED_MODULE_1__/* ["default"].stopTurnsSpent */ .Z.stopTurnsSpent - currentTurnsSpent();
 }
 function incrementTurnsSpentAdjustment() {
-  var current = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
-  (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .set */ .t8)("_crimbo21TurnsSpentAdjustment", current + 1);
+  var current = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
+  (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21TurnsSpentAdjustment", current + 1);
 }
 function turnsSpentAdjustment() {
-  var result = (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
+  var result = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21TurnsSpentAdjustment", 0);
 
-  if (Math.floor((todayTurnsSpent() + result + 15) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
+  if (Math.floor((todayTurnsSpent() + result + 15) / 3) < (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0)) {
     // Ground truth is the game's cold res requirement, so adjust if we're off.
     var oldResult = result;
-    result = 3 * (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_crimbo21ColdResistance", 0) - 15 - todayTurnsSpent();
+    result = 3 * (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21ColdResistance", 0) - 15 - todayTurnsSpent();
     (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.print)("Inconsistent stored turns spent adjustment ".concat(oldResult, ". Adjusting to ").concat(result, "."), "red");
   }
 
-  (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .set */ .t8)("_crimbo21TurnsSpentAdjustment", result);
+  (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .set */ .t8)("_crimbo21TurnsSpentAdjustment", result);
   return result;
 }
 function expectedHp(weight) {
@@ -7440,19 +7423,19 @@ function expectedHp(weight) {
 function lanternMultiplier(skill) {
   var element;
 
-  if (skill === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$skill */ .tm)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Saucegeyser"])))) {
-    element = (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U)("Hot Spell Damage") > (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U)("Cold Spell Damage") ? "hot" : "cold";
-  } else if (skill === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$skill */ .tm)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Fearful Fettucini"])))) {
+  if (skill === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$skill */ .tm)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["Saucegeyser"])))) {
+    element = (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U)("Hot Spell Damage") > (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U)("Cold Spell Damage") ? "hot" : "cold";
+  } else if (skill === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$skill */ .tm)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["Fearful Fettucini"])))) {
     element = "spooky";
-  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$class */ ._$)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$effect */ ._G)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Spirit of Cayenne"]))))) {
+  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$class */ ._$)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$effect */ ._G)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["Spirit of Cayenne"]))))) {
     element = "hot";
-  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$class */ ._$)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$effect */ ._G)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Spirit of Peppermint"]))))) {
+  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$class */ ._$)(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$effect */ ._G)(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["Spirit of Peppermint"]))))) {
     element = "cold";
-  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$class */ ._$)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$effect */ ._G)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Spirit of Garlic"]))))) {
+  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$class */ ._$)(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$effect */ ._G)(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral(["Spirit of Garlic"]))))) {
     element = "stench";
-  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$class */ ._$)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$effect */ ._G)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Spirit of Wormwood"]))))) {
+  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$class */ ._$)(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$effect */ ._G)(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["Spirit of Wormwood"]))))) {
     element = "spooky";
-  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$class */ ._$)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$effect */ ._G)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Spirit of Bacon Grease"]))))) {
+  } else if (skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$class */ ._$)(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["Pastamancer"]))) && (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .have */ .lf)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$effect */ ._G)(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["Spirit of Bacon Grease"]))))) {
     element = "sleaze";
   } else {
     throw "Unrecognized skill ".concat(skill, ".");
@@ -7468,31 +7451,31 @@ function lanternMultiplier(skill) {
   };
   damageMultipliers[element] = 1;
 
-  if (skill === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$skill */ .tm)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Weapon of the Pastalord"])))) {
+  if (skill === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$skill */ .tm)(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["Weapon of the Pastalord"])))) {
     damageMultipliers.physical = 1;
   }
 
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Rain-Doh green lantern"]))))) {
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["Rain-Doh green lantern"]))))) {
     damageMultipliers.stench += damageMultipliers[element];
   }
 
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["snow mobile"]))))) {
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral(["snow mobile"]))))) {
     damageMultipliers.cold += damageMultipliers[element];
   }
 
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["meteorb"]))))) {
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral(["meteorb"]))))) {
     damageMultipliers.hot += damageMultipliers[element];
   }
 
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("retroCapeSuperhero") === "heck" && (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("retroCapeWashingInstructions") === "kill") {
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"])))) && (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("retroCapeSuperhero") === "heck" && (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("retroCapeWashingInstructions") === "kill") {
     damageMultipliers.spooky += damageMultipliers[element];
   }
 
-  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["porcelain porkpie"])))) && skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$class */ ._$)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Pastamancer"])))) {
+  if ((0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["porcelain porkpie"])))) && skill.class === (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$class */ ._$)(_templateObject22 || (_templateObject22 = _taggedTemplateLiteral(["Pastamancer"])))) {
     damageMultipliers.sleaze += damageMultipliers[element];
   }
 
-  if ((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .get */ .U2)("_crimbo21LabSnowing")) {
+  if ((0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U2)("_crimbo21LabSnowing")) {
     damageMultipliers.cold *= 1.5;
   }
 
@@ -7501,23 +7484,23 @@ function lanternMultiplier(skill) {
 function predictedDamage(skill) {
   var multiplier = () => {
     switch (skill) {
-      case (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$skill */ .tm)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Saucegeyser"]))):
+      case (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$skill */ .tm)(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["Saucegeyser"]))):
         return 0.4;
 
-      case (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$skill */ .tm)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Weapon of the Pastalord"]))):
-        return (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["aerogel apron"])))) ? 0.5 : 0.25;
+      case (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$skill */ .tm)(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["Weapon of the Pastalord"]))):
+        return (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject25 || (_templateObject25 = _taggedTemplateLiteral(["aerogel apron"])))) ? 0.5 : 0.25;
 
-      case (0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$skill */ .tm)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Fearful Fettucini"]))):
-        return (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["velour veil"])))) ? 1.5 : 0.5;
+      case (0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$skill */ .tm)(_templateObject26 || (_templateObject26 = _taggedTemplateLiteral(["Fearful Fettucini"]))):
+        return (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject27 || (_templateObject27 = _taggedTemplateLiteral(["velour veil"])))) ? 1.5 : 0.5;
 
       default:
         return 0;
     }
   };
 
-  var criticalMultiplier = () => (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U)("Spell Critical Percent") >= 89 ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$item */ .xr)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["dark baconstone ring"])))) ? 3 : 2 : 1;
+  var criticalMultiplier = () => (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U)("Spell Critical Percent") >= 89 ? (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.haveEquipped)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$item */ .xr)(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["dark baconstone ring"])))) ? 3 : 2 : 1;
 
-  return multiplier() * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myBuffedstat)((0,libram__WEBPACK_IMPORTED_MODULE_2__/* .$stat */ .Ri)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Mysticality"])))) * (1 + (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U)("Spell Damage Percent") / 100) * criticalMultiplier() * (1 - 0.004 * (0,libram__WEBPACK_IMPORTED_MODULE_4__/* .get */ .U)("Monster Level")) * lanternMultiplier(skill);
+  return multiplier() * (0,kolmafia__WEBPACK_IMPORTED_MODULE_0__.myBuffedstat)((0,libram__WEBPACK_IMPORTED_MODULE_3__/* .$stat */ .Ri)(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["Mysticality"])))) * (1 + (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U)("Spell Damage Percent") / 100) * criticalMultiplier() * (1 - 0.004 * (0,libram__WEBPACK_IMPORTED_MODULE_5__/* .get */ .U)("Monster Level")) * lanternMultiplier(skill);
 }
 
 /***/ }),
